@@ -403,6 +403,8 @@ quickViewBtns.forEach(btn => {
 });
 
 // ==================== PRODUCT CARD 3D TILT EFFECT ====================
+// Disabled for better scroll performance
+/*
 const productCards = document.querySelectorAll('.product-card');
 
 // Only enable tilt on larger screens
@@ -427,6 +429,7 @@ if (window.innerWidth > 768) {
         });
     });
 }
+*/
 
 // ==================== FORM INPUT ANIMATION ====================
 const formInputs = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
@@ -589,7 +592,12 @@ window.addEventListener('error', (e) => {
 });
 
 // ==================== CREATE FLOATING PARTICLES ====================
+// Disabled for better scroll performance
 function createParticles() {
+    // Particles disabled to improve scrolling performance
+    return;
+
+    /*
     const particleCount = window.innerWidth > 768 ? 30 : 15;
 
     for (let i = 0; i < particleCount; i++) {
@@ -614,6 +622,7 @@ function createParticles() {
 
         document.body.appendChild(particle);
     }
+    */
 }
 
 // ==================== INITIALIZE ====================

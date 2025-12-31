@@ -55,7 +55,6 @@
 
 html {
     font-size: 16px;
-    overflow-x: hidden;
     max-width: 100vw;
     width: 100%;
     height: 100%;
@@ -77,9 +76,7 @@ body {
             #4c1d95 90%,
             #1e293b 100%
         );
-    background-size: 400% 400%;
     background-attachment: fixed;
-    animation: gradientShift 20s ease infinite;
     max-width: 100vw;
     width: 100%;
     min-height: 100vh;
@@ -87,6 +84,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 @keyframes gradientShift {
@@ -95,7 +93,29 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Animated Background Effects - Glowing Orbs */
+/* Screen reader only class for accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Image optimization for performance */
+img {
+    height: auto;
+    max-width: 100%;
+    display: block;
+    content-visibility: auto;
+}
+
+/* Animated Background Effects - Glowing Orbs - DISABLED FOR PERFORMANCE */
+/*
 body::before {
     content: '';
     position: fixed;
@@ -128,8 +148,10 @@ body::before {
         opacity: 0.9;
     }
 }
+*/
 
-/* Mesh Pattern Overlay */
+/* Mesh Pattern Overlay - DISABLED FOR PERFORMANCE */
+/*
 body::after {
     content: '';
     position: fixed;
@@ -145,6 +167,7 @@ body::after {
     z-index: 0;
     opacity: 0.5;
 }
+*/
 
 /* Floating Particles */
 .particle {
@@ -1082,8 +1105,9 @@ img {
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-10px) translateZ(0);
     box-shadow: 0 15px 40px rgba(44, 156, 147, 0.3);
+    will-change: transform, box-shadow;
 }
 
 .product-image {
@@ -1769,35 +1793,35 @@ img {
 }
 
 [data-aos="fade-up"] {
-    transform: translateY(50px);
+    transform: translate3d(0, 50px, 0);
 }
 
 [data-aos="fade-up"].aos-animate {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
 }
 
 [data-aos="fade-down"] {
-    transform: translateY(-50px);
+    transform: translate3d(0, -50px, 0);
 }
 
 [data-aos="fade-down"].aos-animate {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
 }
 
 [data-aos="fade-right"] {
-    transform: translateX(-50px);
+    transform: translate3d(-50px, 0, 0);
 }
 
 [data-aos="fade-right"].aos-animate {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
 }
 
 [data-aos="fade-left"] {
-    transform: translateX(50px);
+    transform: translate3d(50px, 0, 0);
 }
 
 [data-aos="fade-left"].aos-animate {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
 }
 
 [data-aos="zoom-in"] {
