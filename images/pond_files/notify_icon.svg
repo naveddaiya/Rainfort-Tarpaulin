@@ -1,0 +1,50 @@
+<svg id="Notifications" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28" height="28" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #111;
+      }
+
+      .cls-2, .cls-4 {
+        fill: none;
+      }
+
+      .cls-3 {
+        clip-path: url(#clip-path);
+      }
+
+      .cls-4 {
+        stroke: #111;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 1.3px;
+      }
+    </style>
+    <clipPath id="clip-path">
+      <path id="path855" class="cls-1" d="M0-682.665H24.2v24.2H0Z" transform="translate(0 682.665)"/>
+    </clipPath>
+  </defs>
+  <path id="Rectangle_91" class="cls-2" d="M0,0H28V28H0Z"/>
+  <g id="g849" transform="translate(1.903 684.567)">
+    <g id="g851" transform="translate(0 -682.665)">
+      <g id="g853" class="cls-3">
+        <g id="g859" transform="translate(10.68 0.709)">
+          <path id="path861" class="cls-4" d="M-77.164-38.582a1.418,1.418,0,0,1-1.418,1.418A1.418,1.418,0,0,1-80-38.582,1.418,1.418,0,0,1-78.582-40,1.418,1.418,0,0,1-77.164-38.582Z" transform="translate(80 40)"/>
+        </g>
+        <g id="g863" transform="translate(9.971 20.651)">
+          <path id="path865" class="cls-4" d="M-112.453,0a2.123,2.123,0,0,1,.121.709,2.127,2.127,0,0,1-2.127,2.127A2.127,2.127,0,0,1-116.585.709,2.123,2.123,0,0,1-116.464,0" transform="translate(116.585)"/>
+        </g>
+        <g id="g867" transform="translate(3.591 3.544)">
+          <path id="path869" class="cls-4" d="M-385.822-232.779v-2.883a5.671,5.671,0,0,0-5.671-5.671,5.671,5.671,0,0,0-5.671,5.671v2.883c0,4.962-2.835,3.591-2.835,8.553h17.012C-382.987-229.188-385.822-227.817-385.822-232.779Z" transform="translate(399.999 241.333)"/>
+        </g>
+        <g id="g871" transform="translate(3.591 1.85)">
+          <path id="path873" class="cls-4" d="M0-200.429a8.511,8.511,0,0,1,4.253-7.365" transform="translate(0 207.794)"/>
+        </g>
+        <g id="g875" transform="translate(16.351 1.85)">
+          <path id="path877" class="cls-4" d="M0,0A8.511,8.511,0,0,1,4.253,7.365"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

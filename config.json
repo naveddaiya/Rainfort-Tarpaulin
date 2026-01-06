@@ -1,0 +1,260 @@
+{
+  "site": {
+    "name": "RainFort Tarpaulin",
+    "tagline": "Premium Tarpaulin",
+    "title": "RainFort Tarpaulin - Premium Tarpaulin Solutions | Manufacturer & Exporter",
+    "description": "RainFort Tarpaulin - Leading manufacturer and exporter of premium tarpaulin solutions including HDPE, PVC, and canvas products since 2016",
+    "keywords": "tarpaulin, HDPE, PVC covers, truck covers, canvas tarpaulin, waterproof sheets, RainFort",
+    "themeColor": "#2c9c93",
+    "foundedYear": "2016"
+  },
+  "logo": {
+    "main": "./new.png",
+    "light": "./rainfort-light-logo.png",
+    "dark": "./rainfort-dark-logo.png",
+    "favicon": "./favicon.ico"
+  },
+  "contact": {
+    "phone": "+918385011488",
+    "phoneDisplay": "+91 83850 11488",
+    "email": "daiyasarfaraz@gmail.com",
+    "location": "Sujangarh, Rajasthan",
+    "workingHours": "Mon - Sat: 8:00 AM - 8:00 PM"
+  },
+  "social": {
+    "whatsapp": "#",
+    "facebook": "#",
+    "instagram": "#",
+    "linkedin": "#"
+  },
+  "team": {
+    "marketingExecutive": {
+      "name": "Mr Sarfaraz Daiya",
+      "title": "Marketing Executive"
+    }
+  },
+  "navigation": [
+    {
+      "id": "home",
+      "label": "Home",
+      "icon": "fas fa-home",
+      "href": "#home"
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "icon": "fas fa-info-circle",
+      "href": "#about"
+    },
+    {
+      "id": "products",
+      "label": "Products",
+      "icon": "fas fa-box-open",
+      "href": "#products"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "icon": "fas fa-envelope",
+      "href": "#contact"
+    }
+  ],
+  "hero": {
+    "subtitle": "PREMIUM TARPAULIN SOLUTIONS",
+    "title": [
+      "Durable, Weather Resistant,",
+      "and Cost-Effective"
+    ],
+    "description": "Leading manufacturer and exporter of high-quality tarpaulin products since 2016",
+    "buttons": [
+      {
+        "text": "Our Products",
+        "href": "#products",
+        "type": "primary",
+        "icon": "fas fa-arrow-right"
+      },
+      {
+        "text": "Get in Touch",
+        "href": "#contact",
+        "type": "secondary"
+      }
+    ]
+  },
+  "about": {
+    "sectionSubtitle": "ABOUT OUR COMPANY",
+    "sectionTitle": "Crafting Solutions, Building Trust: The RainFort Tarpaulin Story",
+    "experience": {
+      "years": "8+",
+      "text": "Years Of Experience"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1655728664483-1e3b0778e1a5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0",
+      "image2": "https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb"
+    },
+    "paragraphs": [
+      "RainFort Tarpaulin is a reputed and leading Manufacturer and Exporter of high-quality tarpaulin and related products, established in 2016. With a focus on delivering durable, weather-resistant solutions, our product range includes HDPE Black Tarpaulin, American Waterproof Tarpaulin Sheets, HDPE Pond Liners, PVC Coated Biofloc Fish Farming Tanks, PVC Truck Covers, Canvas Tarpaulins, and more.",
+      "Known for their lightweight design and ease of handling, our products offer superior comfort and are trusted by clients for their durability and performance.",
+      "At RainFort Tarpaulin, our success is driven by a highly skilled team and a strong infrastructure, enabling us to meet the ever-growing demands of the industry with precision and quality. With a team led by Mr Sarfaraz Daiya, our Marketing Executive, we ensure that each product undergoes stringent quality checks before dispatch."
+    ],
+    "stats": [
+      {
+        "icon": "fas fa-award",
+        "title": "Premium Quality",
+        "description": "ISO Certified Products"
+      },
+      {
+        "icon": "fas fa-shipping-fast",
+        "title": "Fast Delivery",
+        "description": "Worldwide Shipping"
+      }
+    ]
+  },
+  "products": {
+    "sectionSubtitle": "OUR PRODUCTS",
+    "sectionTitle": "Premium Product Range",
+    "description": "Explore our comprehensive collection of high-quality tarpaulin solutions designed for diverse industrial and agricultural applications.",
+    "introImage": "https://images.unsplash.com/photo-1603513492128-ba7bc9b3e143?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0",
+    "items": [
+      {
+        "id": "pvc-truck-covers",
+        "name": "PVC Truck Covers",
+        "description": "Heavy-duty waterproof covers for commercial vehicles",
+        "image": "./images/truck.png"
+      },
+      {
+        "id": "canvas-tarpaulin",
+        "name": "Pvc Coated Tarpaulin",
+        "description": "Nylon Double Side Pvc Coated material solutions",
+        "image": "/images/coated.jpg"
+      },
+      {
+        "id": "window-awnings",
+        "name": "Tent Pagoda",
+        "description": "Stylish and protective Tent solutions",
+        "image": "./images/tent-pagoda.webp"
+      },
+      {
+        "id": "biofloc-tanks",
+        "name": "Biofloc Fish Farming Tanks",
+        "description": "PVC coated tanks for aquaculture",
+        "image": "/images/bioflock.webp"
+      },
+      {
+        "id": "seat-belt-fabrics",
+        "name": "White Tent Fabric Rolls (Blackout)",
+        "description": "High-strength and mechanical Tent materials",
+        "image": "/images/white.png"
+      },
+      {
+        "id": "hdpe-tarpaulin",
+        "name": "Pond Liner",
+        "description": "Waterproof and UV resistant fabrics for ponds",
+        "image": "/images/pond.jpg"
+      }
+    ]
+  },
+  "features": {
+    "sectionSubtitle": "KEY FEATURES OF OUR PRODUCTS",
+    "sectionTitle": "What Sets Our Products Apart",
+    "items": [
+      {
+        "number": "01",
+        "icon": "fas fa-shield-alt",
+        "title": "Durability and Weather Resistance",
+        "description": "Our products are built to last, withstanding harsh environmental conditions without compromising quality."
+      },
+      {
+        "number": "02",
+        "icon": "fas fa-gem",
+        "title": "High-Quality Materials",
+        "description": "We use premium-grade HDPE, PVC, and other materials, ensuring strength, flexibility, and longevity in all our products."
+      },
+      {
+        "number": "03",
+        "icon": "fas fa-layer-group",
+        "title": "Wide Product Range",
+        "description": "From pond liners to truck covers, we offer a variety of products to cater to diverse industrial and agricultural needs."
+      }
+    ]
+  },
+  "whyChooseUs": {
+    "sectionSubtitle": "WHY CHOOSE US?",
+    "sectionTitle": "Excellence You Can Rely On",
+    "items": [
+      {
+        "icon": "fas fa-user-tie",
+        "title": "Client-Centric Approach",
+        "description": "We prioritize customer needs, ensuring personalized service and complete satisfaction."
+      },
+      {
+        "icon": "fas fa-handshake",
+        "title": "Ethical Business Practices",
+        "description": "Our transparent and honest dealings build long-lasting trust with our clients."
+      },
+      {
+        "icon": "fas fa-dollar-sign",
+        "title": "Competitive Pricing",
+        "description": "We offer high-quality products at economical prices without compromising on quality."
+      },
+      {
+        "icon": "fas fa-users-cog",
+        "title": "Efficient Team & Infrastructure",
+        "description": "Our skilled team and advanced facilities ensure timely and top-notch production."
+      }
+    ]
+  },
+  "testimonials": {
+    "sectionSubtitle": "TESTIMONIALS",
+    "sectionTitle": "What Our Customers Say?",
+    "items": [
+      {
+        "id": 1,
+        "name": "Zafar Daiya",
+        "role": "Customer",
+        "text": "Good person Handle customer with humble Product is good good quality",
+        "rating": 5
+      },
+      {
+        "id": 2,
+        "name": "Naved Daiya",
+        "role": "Customer",
+        "text": "RainFort Tarpaulin ALL PRODUCTS AND MATERIAL ARE BEST IN QUALITY AND MOST IMPORTANT THING IS THAT THEIR COMMITMENT",
+        "rating": 5
+      }
+    ]
+  },
+  "footer": {
+    "description": "Your trusted partner for premium tarpaulin solutions since 2016. Quality, durability, and customer satisfaction are our priorities.",
+    "quickLinks": [
+      { "label": "Home", "href": "#home" },
+      { "label": "About Us", "href": "#about" },
+      { "label": "Products", "href": "#products" },
+      { "label": "Contact", "href": "#contact" }
+    ],
+    "products": [
+      { "label": "PVC Truck Covers", "href": "#" },
+      { "label": "Canvas Tarpaulin", "href": "#" },
+      { "label": "HDPE Tarpaulin", "href": "#" },
+      { "label": "Fish Farming Tanks", "href": "#" }
+    ],
+    "copyright": "2024 RainFort Tarpaulin. All Rights Reserved.",
+    "designedBy": "Naved Daiya"
+  },
+  "popup": {
+    "icon": "fas fa-gift",
+    "title": "Get Special Offer!",
+    "description": "Fill in your details to receive exclusive deals on our premium tarpaulin products",
+    "submitButton": "Get Special Offer",
+    "securityNote": "Your information is safe with us",
+    "productOptions": [
+      { "value": "", "label": "Select Product Interest" },
+      { "value": "truck-covers", "label": "PVC Truck Covers" },
+      { "value": "canvas", "label": "Canvas Tarpaulin" },
+      { "value": "awnings", "label": "Window Awnings" },
+      { "value": "fish-tanks", "label": "Fish Farming Tanks" },
+      { "value": "seat-belt", "label": "Seat Belt Fabrics" },
+      { "value": "hdpe", "label": "HDPE Tarpaulin" },
+      { "value": "pond-liners", "label": "HDPE Pond Liners" }
+    ]
+  }
+}

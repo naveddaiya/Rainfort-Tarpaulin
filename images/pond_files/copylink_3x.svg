@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e6e7e8;
+      }
+
+      .cls-2 {
+        fill: #111;
+        stroke: #e6e7e8;
+      }
+    </style>
+  </defs>
+  <g id="Copy_Link" data-name="Copy Link" transform="translate(-652 -173)">
+    <rect id="Copy_Link-2" data-name="Copy Link" class="cls-1" width="64" height="64" rx="5" transform="translate(652 173)"/>
+    <g id="Layer_1" transform="translate(657.549 178.549)">
+      <g id="Group_130823" data-name="Group 130823" transform="translate(9.451 9.451)">
+        <path id="Path_144879" data-name="Path 144879" class="cls-2" d="M18.528,35.608a9.2,9.2,0,0,0,6.526-2.7l4.859-4.859a2.359,2.359,0,0,0-3.336-3.336l-4.859,4.859a4.512,4.512,0,0,1-6.381-6.381L20.2,18.332A2.359,2.359,0,0,0,16.86,15L12,19.855a9.226,9.226,0,0,0,6.527,15.753Z" transform="translate(-9.302 -1.608)"/>
+        <path id="Path_144880" data-name="Path 144880" class="cls-2" d="M32.908,12a9.241,9.241,0,0,0-13.053,0L15,16.859A2.359,2.359,0,0,0,18.332,20.2l4.859-4.859a4.512,4.512,0,0,1,6.381,6.381l-4.859,4.859a2.359,2.359,0,1,0,3.336,3.336l4.859-4.859A9.24,9.24,0,0,0,32.908,12Z" transform="translate(-1.608 -9.302)"/>
+        <path id="Path_144881" data-name="Path 144881" class="cls-2" d="M26.9,13.847a2.358,2.358,0,0,0-3.336,0l-9.718,9.718A2.359,2.359,0,1,0,17.183,26.9L26.9,17.183a2.359,2.359,0,0,0,0-3.336Z" transform="translate(-3.374 -3.374)"/>
+      </g>
+    </g>
+  </g>
+</svg>

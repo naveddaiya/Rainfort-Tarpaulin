@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #111;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  <g id="Saved" transform="translate(-26 -129)">
+    <path id="Rectangle_91" class="cls-1" d="M0,0H28V28H0Z" transform="translate(26 129)"/>
+    <path id="Rectangle_91-2" class="cls-1" d="M0,0H28V28H0Z" transform="translate(26 129)"/>
+    <path id="Icon_awesome-bookmark" data-name="Icon awesome-bookmark" class="cls-2" d="M0,21.839V2.047A2.047,2.047,0,0,1,2.047,0H14.332a2.047,2.047,0,0,1,2.047,2.047V21.839L8.19,17.062Z" transform="translate(31.81 132.08)"/>
+  </g>
+</svg>

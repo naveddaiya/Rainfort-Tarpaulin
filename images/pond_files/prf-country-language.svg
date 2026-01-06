@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <g data-name="Country &amp; Language">
+        <path d="M0 0h28v28H0z" style="fill:none"/>
+        <g data-name="Group 7380">
+            <g data-name="Group 7379">
+                <path data-name="Path 3640" d="M0 284.556A2.445 2.445 0 0 0 2.444 287h17.112A2.445 2.445 0 0 0 22 284.556v-2.444H0z" transform="translate(3 -265.056)" style="fill:#138808"/>
+                <path data-name="Path 3641" d="M0 146h22v-6.111H0z" transform="translate(3 -128.945)" style="fill:#fff"/>
+                <path data-name="Path 3642" d="M22 31v-2.444a2.445 2.445 0 0 0-2.444-2.444H2.444A2.445 2.445 0 0 0 0 28.556V31z" transform="translate(3 -20.056)" style="fill:#f93"/>
+                <path data-name="Path 3643" d="M203.987 156.543a2.445 2.445 0 1 0-2.445 2.444 2.445 2.445 0 0 0 2.445-2.444" transform="translate(-187.543 -142.543)" style="fill:navy"/>
+                <path data-name="Path 3644" d="M216.986 170.153a1.834 1.834 0 1 0-1.834 1.833 1.834 1.834 0 0 0 1.834-1.833" transform="translate(-201.153 -156.153)" style="fill:#eee"/>
+                <g data-name="Group 7378">
+                    <g data-name="Group 7377" style="opacity:.6">
+                        <path data-name="Path 3645" d="m215.167 168.334.089 1.384.612-1.244-.447 1.312 1.041-.915-.915 1.042 1.312-.447-1.244.612 1.384.089-1.384.089 1.244.612-1.312-.446.915 1.041-1.041-.915.447 1.312-.612-1.244-.089 1.384-.089-1.384-.612 1.244.447-1.312-1.042.915.915-1.041-1.312.446 1.244-.612-1.384-.089 1.384-.089-1.244-.612 1.312.447-.915-1.042 1.042.915-.447-1.312.612 1.244z" transform="translate(-201.167 -156.168)" style="fill:navy"/>
+                    </g>
+                    <path data-name="Path 3646" d="M241.777 197.389a.611.611 0 1 1 .611.611.611.611 0 0 1-.611-.611" transform="translate(-228.388 -183.389)" style="fill:navy"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
