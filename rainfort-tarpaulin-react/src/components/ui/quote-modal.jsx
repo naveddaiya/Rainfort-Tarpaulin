@@ -76,7 +76,7 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200 overflow-y-auto">
       {/* Backdrop with blur */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
@@ -84,7 +84,7 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+      <div className="relative w-full max-w-lg my-auto animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
         {/* Decorative glow effects */}
         <div className="absolute -top-20 -left-20 w-40 h-40 bg-orange-500/30 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-navy-500/30 rounded-full blur-3xl animate-pulse delay-1000" />

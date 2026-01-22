@@ -3,18 +3,18 @@ import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-sm border-2 px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-navy-500 bg-navy-500 text-white hover:bg-navy-600",
+          "border-navy-400 bg-gradient-to-r from-navy-500 to-navy-600 text-white hover:from-navy-600 hover:to-navy-700 hover:scale-105 hover:shadow-lg",
         secondary:
-          "border-charcoal-500 bg-charcoal-500 text-white hover:bg-charcoal-600",
+          "border-charcoal-400 bg-gradient-to-r from-charcoal-500 to-charcoal-600 text-white hover:from-charcoal-600 hover:to-charcoal-700 hover:scale-105",
         destructive:
-          "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "border-navy-500 text-navy-500 bg-transparent",
-        accent: "border-safety-500 bg-safety-500 text-white hover:bg-safety-600",
+          "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/80 hover:scale-105",
+        outline: "border-navy-500 text-navy-600 bg-white hover:bg-navy-50 hover:scale-105",
+        accent: "border-orange-400 bg-gradient-to-r from-safety-500 to-orange-600 text-white hover:from-safety-600 hover:to-orange-700 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/50",
       },
     },
     defaultVariants: {

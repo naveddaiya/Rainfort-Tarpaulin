@@ -21,7 +21,7 @@ export const products = [
     specifications: {
       material: "HDPE (High-Density Polyethylene)",
       thickness: "200 GSM",
-      color: "Black",
+      color: "ALL",
       warranty: "1 Year"
     }
   },
@@ -38,7 +38,7 @@ export const products = [
     specifications: {
       material: "PVC Coated Fabric",
       thickness: "300 GSM",
-      color: "Blue/White",
+      color: "ALL",
       warranty: "2 Years"
     }
   },
@@ -55,8 +55,8 @@ export const products = [
     specifications: {
       material: "HDPE",
       thickness: "250 GSM",
-      color: "Black/Green",
-      warranty: "1.5 Years"
+      color: "ALL",
+      warranty: "2 Years"
     }
   },
   {
@@ -72,42 +72,42 @@ export const products = [
     specifications: {
       material: "PVC Coated Fabric",
       thickness: "500 GSM",
-      color: "Blue",
+      color: "ALL",
       warranty: "2 Years"
     }
   },
   {
     id: 5,
-    name: "PVC Truck Covers",
-    category: "Transportation",
-    image: "/images/products/truck-cover.jpg",
+    name: "White Tent Fabric Rolls (Blackout)",
+    category: "Specialized",
+    image: "/images/products/white.png",
     price: "₹220/sq.m",
-    description: "Industrial-grade PVC truck covers for cargo protection during transit.",
+    description: "High-stretch PVC fabric rolls and mechanical Tent materials.",
     features: ["Weatherproof", "Reinforced Edges", "Custom Sizes", "Heavy Duty"],
-    applications: ["Logistics", "Transport", "Cargo Protection"],
+    applications: ["Tent Making", "Covers", "General Use"],
     badge: "Industrial",
     specifications: {
       material: "PVC Laminated Fabric",
       thickness: "400 GSM",
-      color: "Green/Blue",
-      warranty: "1.5 Years"
+      color: "White",
+      warranty: "2 Years"
     }
   },
   {
     id: 6,
-    name: "Canvas Tarpaulins",
-    category: "Traditional",
-    image: "/images/products/canvas-tarp.jpg",
+    name: "Pond Liner",
+    category: "Agriculture",
+    image: "/images/products/pond.jpg",
     price: "₹160/sq.m",
-    description: "Natural canvas tarpaulins offering breathability and strength.",
+    description: "Waterproof and UV resistant pond liners for various applications.",
     features: ["Breathable", "Strong", "Natural Material", "Eco-friendly"],
-    applications: ["Tent Making", "Covers", "General Use"],
+    applications: ["Agriculture", "Water Harvesting", "General Use"],
     badge: "Classic",
     specifications: {
       material: "Cotton Canvas",
       thickness: "350 GSM",
-      color: "Natural/Beige",
-      warranty: "1 Year"
+      color: "ALL",
+      warranty: "4 Year"
     }
   },
 

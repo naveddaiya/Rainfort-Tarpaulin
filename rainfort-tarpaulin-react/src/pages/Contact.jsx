@@ -39,13 +39,13 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Location",
-      details: ["Mumbai, Maharashtra", "India"],
+      details: ["Sujangarh, Rajasthan", "India"],
       action: null
     },
     {
       icon: Clock,
       title: "Business Hours",
-      details: ["Mon - Sat: 9:00 AM - 6:00 PM", "Sunday: Closed"],
+      details: ["Mon - Sun: 9:00 AM - 6:00 PM"],
       action: null
     },
   ];

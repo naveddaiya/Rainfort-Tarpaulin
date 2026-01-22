@@ -68,8 +68,8 @@ const IndustrialNav = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out",
         isScrolled
-          ? "bg-background/95 backdrop-blur-md border-b-2 border-border heavy-shadow"
-          : "bg-background/80 backdrop-blur-sm",
+          ? "bg-white/95 backdrop-blur-xl border-b-2 border-orange-200/50 shadow-2xl shadow-navy-500/10"
+          : "bg-white/80 backdrop-blur-md",
         isVisible ? "translate-y-0" : "-translate-y-full"
       )}
     >
@@ -79,13 +79,15 @@ const IndustrialNav = () => {
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            className="flex items-center space-x-0 hover:opacity-90 transition-all duration-300 hover:scale-105"
           >
-            <div className="w-12 h-12 bg-navy-500 border-2 border-navy-600 flex items-center justify-center font-bold text-white text-xl heavy-shadow">
-              RF
-            </div>
+            <img
+              src="/new.png"
+              alt="RainFort Logo"
+              className="h-16 w-auto object-contain"
+            />
             <div className="flex flex-col">
-              <span className="text-lg font-bold uppercase tracking-wider text-foreground">
+              <span className="text-lg font-bold uppercase tracking-wider bg-gradient-to-r from-navy-600 to-orange-600 bg-clip-text text-transparent">
                 RainFort
               </span>
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
