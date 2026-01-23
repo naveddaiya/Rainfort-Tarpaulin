@@ -1,8 +1,9 @@
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
+import { submitContactMessage } from '@/services/quoteService';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -12,15 +13,38 @@ const Contact = () => {
     company: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const result = await submitContactMessage(formData);
+      console.log('✅ Contact message submitted:', result);
+      setIsSubmitting(false);
+      setIsSuccess(true);
+
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+        setFormData({ name: '', email: '', phone: '', company: '', message: '' });
+      }, 3000);
+    } catch (err) {
+      console.error('❌ Error submitting contact:', err);
+      setIsSubmitting(false);
+      setError(err.message || 'Failed to send message. Please try again.');
+
+      // Auto-clear error after 5 seconds
+      setTimeout(() => setError(null), 5000);
+    }
   };
 
   const contactInfo = [
@@ -198,8 +222,42 @@ const Contact = () => {
                       />
                     </div>
 
-                    <Button type="submit" variant="accent" size="lg" className="w-full">
-                      Send Message
+                    {/* Error Message */}
+                    {error && (
+                      <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                        <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+                      </div>
+                    )}
+
+                    {/* Success Message */}
+                    {isSuccess && (
+                      <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                        <p className="text-sm text-green-700 dark:text-green-400">Message sent successfully! We'll get back to you soon.</p>
+                      </div>
+                    )}
+
+                    <Button
+                      type="submit"
+                      variant="accent"
+                      size="lg"
+                      className="w-full"
+                      disabled={isSubmitting || isSuccess}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Sending...
+                        </span>
+                      ) : isSuccess ? (
+                        <span className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          Message Sent!
+                        </span>
+                      ) : (
+                        'Send Message'
+                      )}
                     </Button>
                   </form>
                 </CardContent>

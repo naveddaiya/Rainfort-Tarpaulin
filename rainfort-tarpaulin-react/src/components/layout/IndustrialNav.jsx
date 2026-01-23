@@ -128,7 +128,7 @@ const IndustrialNav = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 border-2 border-border bg-background hover:bg-muted transition-colors"
+            className="lg:hidden p-2 border-2 border-border bg-background hover:bg-muted transition-colors mr-2"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
