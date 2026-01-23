@@ -54,16 +54,16 @@ const Home = () => {
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 bg-gradient-to-br from-blue-50 via-orange-50/30 to-slate-50 overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-10"></div>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-navy-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl float-animation"></div>
+        <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 bg-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 bg-navy-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-48 h-48 md:w-80 md:h-80 bg-purple-400/10 rounded-full blur-3xl float-animation"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8 animate-in slide-in-from-left duration-700">
               <Badge variant="accent" className="w-fit animate-in fade-in slide-in-from-top duration-500">
-                🔥 INDUSTRIAL STRENGTH SOLUTIONS
+                INDUSTRIAL STRENGTH SOLUTIONS
               </Badge>
 
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight animate-in fade-in slide-in-from-bottom duration-700 delay-200">
@@ -123,8 +123,8 @@ const Home = () => {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl border-2 border-orange-400 heavy-shadow glow-effect animate-pulse"></div>
-                <div className="absolute -bottom-4 -left-4 w-32 h-32 border-4 border-navy-500 rounded-2xl rotate-6"></div>
+                <div className="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl border-2 border-orange-400 heavy-shadow glow-effect animate-pulse"></div>
+                <div className="absolute -bottom-2 -left-2 md:-bottom-4 md:-left-4 w-20 h-20 md:w-32 md:h-32 border-4 border-navy-500 rounded-2xl rotate-6"></div>
               </div>
             </div>
           </div>

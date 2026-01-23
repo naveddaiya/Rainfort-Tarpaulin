@@ -230,7 +230,7 @@ const Applications = () => {
             Our team of experts can help you select the perfect tarpaulin solution
             tailored to your specific industry requirements.
           </p>
-          <Button variant="accent" size="lg">
+          <Button variant="accent" size="lg" className="w-full sm:w-auto whitespace-normal">
             Contact Our Industry Specialists
           </Button>
         </div>

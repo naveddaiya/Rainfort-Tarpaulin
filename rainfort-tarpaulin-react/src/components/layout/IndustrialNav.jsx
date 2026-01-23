@@ -73,20 +73,20 @@ const IndustrialNav = () => {
         isVisible ? "translate-y-0" : "-translate-y-full"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            className="flex items-center space-x-0 hover:opacity-90 transition-all duration-300 hover:scale-105"
+            className="flex items-center -ml-6 hover:opacity-90 transition-all duration-300 hover:scale-105"
           >
             <img
               src="/new.png"
               alt="RainFort Logo"
-              className="h-16 w-auto object-contain"
+              className="h-20 w-auto object-contain mt-1"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col -ml-8">
               <span className="text-lg font-bold uppercase tracking-wider bg-gradient-to-r from-navy-600 to-orange-600 bg-clip-text text-transparent">
                 RainFort
               </span>
