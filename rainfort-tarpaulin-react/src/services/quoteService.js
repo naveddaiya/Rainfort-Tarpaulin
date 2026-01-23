@@ -6,23 +6,21 @@ import { db } from '@/config/firebase';
  * @param {Object} quoteData - The quote request data
  * @param {string} quoteData.name - Customer name
  * @param {string} quoteData.phone - Customer phone number
- * @param {string} quoteData.requirement - Customer requirements
- * @param {string|null} quoteData.product - Product name (optional)
+ * @param {string} quoteData.product - Selected product
  * @returns {Promise<Object>} - Returns the created document reference
  */
 export const submitQuote = async (quoteData) => {
   try {
     // Validate required fields
-    if (!quoteData.name || !quoteData.phone || !quoteData.requirement) {
-      throw new Error('Missing required fields: name, phone, and requirement are required');
+    if (!quoteData.name || !quoteData.phone || !quoteData.product) {
+      throw new Error('Missing required fields: name, phone, and product are required');
     }
 
     // Prepare the data to be stored
     const quoteSubmission = {
       name: quoteData.name.trim(),
       phone: quoteData.phone.trim(),
-      requirement: quoteData.requirement.trim(),
-      product: quoteData.product || 'General Inquiry',
+      product: quoteData.product.trim(),
       status: 'new', // new, contacted, quoted, completed, cancelled
       source: 'website',
       createdAt: serverTimestamp(),
