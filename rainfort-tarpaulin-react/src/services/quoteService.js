@@ -1,5 +1,6 @@
 import { collection, addDoc, serverTimestamp, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { sendQuoteEmail, sendContactEmail } from './emailService';
 
 /**
  * Submit a quote request to Firebase Firestore
@@ -36,6 +37,9 @@ export const submitQuote = async (quoteData) => {
 
     console.log('✅ Quote submitted successfully with ID:', docRef.id);
 
+    // Send Email Notification
+    sendQuoteEmail(quoteData).catch(err => console.error('Email failed:', err));
+
     return {
       success: true,
       id: docRef.id,
@@ -43,8 +47,7 @@ export const submitQuote = async (quoteData) => {
     };
   } catch (error) {
     console.error('❌ Error submitting quote:', error);
-
-    // Handle specific Firebase errors
+    // ... error handling ...
     if (error.code === 'permission-denied') {
       throw new Error('Permission denied. Please check Firebase security rules.');
     } else if (error.code === 'unavailable') {
@@ -52,57 +55,11 @@ export const submitQuote = async (quoteData) => {
     } else if (error.code === 'unauthenticated') {
       throw new Error('Authentication required. Please check your Firebase configuration.');
     }
-
     throw new Error(error.message || 'Failed to submit quote request');
   }
 };
 
-/**
- * Get all quotes from Firebase (for admin use)
- * @param {number} limit - Maximum number of quotes to retrieve
- * @returns {Promise<Array>} - Array of quote documents
- */
-export const getAllQuotes = async (limit = 50) => {
-  try {
-    const quotesRef = collection(db, 'quotes');
-    const q = query(quotesRef, orderBy('createdAt', 'desc'));
-    const querySnapshot = await getDocs(q);
-
-    const quotes = [];
-    querySnapshot.forEach((doc) => {
-      quotes.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
-
-    return quotes.slice(0, limit);
-  } catch (error) {
-    console.error('❌ Error fetching quotes:', error);
-    throw new Error('Failed to fetch quotes');
-  }
-};
-
-/**
- * Get quote statistics (for admin dashboard)
- * @returns {Promise<Object>} - Quote statistics
- */
-export const getQuoteStats = async () => {
-  try {
-    const quotes = await getAllQuotes();
-
-    return {
-      total: quotes.length,
-      new: quotes.filter(q => q.status === 'new').length,
-      contacted: quotes.filter(q => q.status === 'contacted').length,
-      quoted: quotes.filter(q => q.status === 'quoted').length,
-      completed: quotes.filter(q => q.status === 'completed').length
-    };
-  } catch (error) {
-    console.error('❌ Error fetching quote stats:', error);
-    throw new Error('Failed to fetch quote statistics');
-  }
-};
+// ... existing code ...
 
 /**
  * Submit a contact message to Firebase Firestore
@@ -143,15 +100,17 @@ export const submitContactMessage = async (contactData) => {
 
     console.log('✅ Contact message submitted successfully with ID:', docRef.id);
 
+    // Send Email Notification
+    sendContactEmail(contactData).catch(err => console.error('Email failed:', err));
+
     return {
       success: true,
       id: docRef.id,
       message: 'Contact message submitted successfully'
     };
   } catch (error) {
+    // ... error handling ...
     console.error('❌ Error submitting contact message:', error);
-
-    // Handle specific Firebase errors
     if (error.code === 'permission-denied') {
       throw new Error('Permission denied. Please check Firebase security rules.');
     } else if (error.code === 'unavailable') {
@@ -159,7 +118,6 @@ export const submitContactMessage = async (contactData) => {
     } else if (error.code === 'unauthenticated') {
       throw new Error('Authentication required. Please check your Firebase configuration.');
     }
-
     throw new Error(error.message || 'Failed to submit contact message');
   }
 };

@@ -108,13 +108,7 @@ const Products = () => {
                       <Badge variant="accent">{product.badge}</Badge>
                     </div>
                   )}
-                  {product.price && (
-                    <div className="absolute bottom-4 left-4">
-                      <div className="bg-background/95 backdrop-blur-sm border-2 border-border px-4 py-2">
-                        <span className="text-2xl font-bold text-navy-500">{product.price}</span>
-                      </div>
-                    </div>
-                  )}
+
                 </div>
 
                 <CardHeader>
