@@ -40,11 +40,19 @@ export const submitQuote = async (quoteData) => {
     console.log('✅ Quote submitted successfully with ID:', docRef.id);
 
     // Send Email Notification
-    sendQuoteEmail(quoteData).catch(err => console.error('Email failed:', err));
+    let emailSent = false;
+    try {
+      await sendQuoteEmail(quoteData);
+      emailSent = true;
+      console.log('✅ Quote email sent successfully');
+    } catch (emailErr) {
+      console.error('❌ Email notification failed:', emailErr);
+    }
 
     return {
       success: true,
       id: docRef.id,
+      emailSent,
       message: 'Quote request submitted successfully'
     };
   } catch (error) {
@@ -104,11 +112,19 @@ export const submitContactMessage = async (contactData) => {
     console.log('✅ Contact message submitted successfully with ID:', docRef.id);
 
     // Send Email Notification
-    sendContactEmail(contactData).catch(err => console.error('Email failed:', err));
+    let emailSent = false;
+    try {
+      await sendContactEmail(contactData);
+      emailSent = true;
+      console.log('✅ Contact email sent successfully');
+    } catch (emailErr) {
+      console.error('❌ Email notification failed:', emailErr);
+    }
 
     return {
       success: true,
       id: docRef.id,
+      emailSent,
       message: 'Contact message submitted successfully'
     };
   } catch (error) {

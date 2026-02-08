@@ -32,12 +32,12 @@ export const sendQuoteEmail = async (quoteData) => {
         to_name: "Admin",
         to_email: "enquiry@rainfort.in",
         from_name: quoteData.name,
-        from_email: "enquiry@rainfort.in",
+        from_email: quoteData.name,
         phone: quoteData.phone,
         product: quoteData.product,
         message: `New Quote Request for ${quoteData.product}`,
         type: "Quote Request",
-        reply_to: "", // Can map if you have user email in quote (we only have phone for quotes)
+        reply_to: "enquiry@rainfort.in",
         details: `
       Name: ${quoteData.name}
       Phone: ${quoteData.phone}
