@@ -1,23 +1,14 @@
-import emailjs from '@emailjs/browser';
-
-// EmailJS Configuration
-// You need to create an account at https://emailjs.com/
-// and get these values from your dashboard
+// EmailJS Configuration - library lazy-loaded on first use
 const EMAILJS_SERVICE_ID = "service_lw0dar9";
 const EMAILJS_TEMPLATE_ID = "template_fhxo59f";
 const EMAILJS_PUBLIC_KEY = "I--ZG8kDW5qyFimL7";
 
 /**
- * Send email using EmailJS
- * @param {Object} templateParams - The parameters to pass to the email template
- * @returns {Promise} - The EmailJS response
+ * Send email using EmailJS (lazy-loaded to keep initial bundle small)
  */
 export const sendEmail = async (templateParams) => {
     try {
-        if (EMAILJS_SERVICE_ID === "YOUR_SERVICE_ID") {
-            console.warn("⚠️ EmailJS not configured. Please set your Service ID, Template ID, and Public Key in src/services/emailService.js");
-            return;
-        }
+        const { default: emailjs } = await import('@emailjs/browser');
 
         const response = await emailjs.send(
             EMAILJS_SERVICE_ID,
@@ -26,10 +17,9 @@ export const sendEmail = async (templateParams) => {
             EMAILJS_PUBLIC_KEY
         );
 
-        console.log('📧 Email sent successfully!', response.status, response.text);
         return response;
     } catch (error) {
-        console.error('❌ Failed to send email:', error);
+        console.error('Failed to send email:', error);
         throw error;
     }
 };
@@ -39,9 +29,10 @@ export const sendEmail = async (templateParams) => {
  */
 export const sendQuoteEmail = async (quoteData) => {
     const templateParams = {
-        to_name: "Admin", // or your name
+        to_name: "Admin",
+        to_email: "enquiry@rainfort.in",
         from_name: quoteData.name,
-        from_email: "website@rainfort.com", // Valid sender if needed
+        from_email: "enquiry@rainfort.in",
         phone: quoteData.phone,
         product: quoteData.product,
         message: `New Quote Request for ${quoteData.product}`,
@@ -64,6 +55,7 @@ export const sendQuoteEmail = async (quoteData) => {
 export const sendContactEmail = async (contactData) => {
     const templateParams = {
         to_name: "Admin",
+        to_email: "enquiry@rainfort.in",
         from_name: contactData.name,
         from_email: contactData.email,
         phone: contactData.phone,

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /_old_website/
+Disallow: /_old_images/
+
+Sitemap: https://rainfort-tarpaulin.pages.dev/sitemap.xml

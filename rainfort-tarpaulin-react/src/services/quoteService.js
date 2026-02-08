@@ -1,5 +1,3 @@
-import { collection, addDoc, serverTimestamp, query, orderBy, getDocs } from 'firebase/firestore';
-import { db } from '@/config/firebase';
 import { sendQuoteEmail, sendContactEmail } from './emailService';
 
 /**
@@ -17,16 +15,20 @@ export const submitQuote = async (quoteData) => {
       throw new Error('Missing required fields: name, phone, and product are required');
     }
 
+    // Lazy load Firebase - only loads when user submits form
+    const { getDb } = await import('@/config/firebase');
+    const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+    const db = await getDb();
+
     // Prepare the data to be stored
     const quoteSubmission = {
       name: quoteData.name.trim(),
       phone: quoteData.phone.trim(),
       product: quoteData.product.trim(),
-      status: 'new', // new, contacted, quoted, completed, cancelled
+      status: 'new',
       source: 'website',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      // Additional metadata
       userAgent: navigator.userAgent,
       referrer: document.referrer || 'direct',
       currentUrl: window.location.href
@@ -47,7 +49,6 @@ export const submitQuote = async (quoteData) => {
     };
   } catch (error) {
     console.error('❌ Error submitting quote:', error);
-    // ... error handling ...
     if (error.code === 'permission-denied') {
       throw new Error('Permission denied. Please check Firebase security rules.');
     } else if (error.code === 'unavailable') {
@@ -58,8 +59,6 @@ export const submitQuote = async (quoteData) => {
     throw new Error(error.message || 'Failed to submit quote request');
   }
 };
-
-// ... existing code ...
 
 /**
  * Submit a contact message to Firebase Firestore
@@ -78,6 +77,11 @@ export const submitContactMessage = async (contactData) => {
       throw new Error('Missing required fields: name, email, phone, and message are required');
     }
 
+    // Lazy load Firebase - only loads when user submits form
+    const { getDb } = await import('@/config/firebase');
+    const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+    const db = await getDb();
+
     // Prepare the data to be stored
     const contactSubmission = {
       name: contactData.name.trim(),
@@ -85,11 +89,10 @@ export const submitContactMessage = async (contactData) => {
       phone: contactData.phone.trim(),
       company: contactData.company?.trim() || '',
       message: contactData.message.trim(),
-      status: 'new', // new, read, replied, resolved
+      status: 'new',
       source: 'website-contact',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      // Additional metadata
       userAgent: navigator.userAgent,
       referrer: document.referrer || 'direct',
       currentUrl: window.location.href
@@ -109,7 +112,6 @@ export const submitContactMessage = async (contactData) => {
       message: 'Contact message submitted successfully'
     };
   } catch (error) {
-    // ... error handling ...
     console.error('❌ Error submitting contact message:', error);
     if (error.code === 'permission-denied') {
       throw new Error('Permission denied. Please check Firebase security rules.');

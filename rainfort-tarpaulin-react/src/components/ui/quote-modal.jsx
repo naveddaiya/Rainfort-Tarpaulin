@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Sparkles, CheckCircle2, Phone, User, ChevronDown, AlertCircle } from 'lucide-react';
-import { Button } from './button';
+import { X, CheckCircle2, Phone, User, ChevronDown, AlertCircle, Sparkles } from 'lucide-react';
 import { submitQuote } from '@/services/quoteService';
 import { products } from '@/data/products';
 
@@ -84,32 +83,31 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 overflow-y-auto">
-      {/* Backdrop with blur */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="quote-modal-title"
+    >
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg my-auto animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-        {/* Decorative glow effects */}
-        <div className="absolute -top-20 -left-20 w-40 h-40 bg-orange-500/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-navy-500/30 rounded-full blur-3xl animate-pulse delay-1000" />
-
+      <div className="relative w-full max-w-lg my-auto">
         {/* Modal Content */}
-        <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-2xl shadow-2xl border-2 border-orange-500/20 overflow-hidden">
-          {/* Animated border gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-navy-500 to-orange-500 opacity-50 blur-xl animate-pulse" />
+        <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-          {/* Inner content container */}
-          <div className="relative bg-white dark:bg-gray-900 m-[2px] rounded-2xl">
             {/* Close button */}
             <button
               onClick={onClose}
+              aria-label="Close quote modal"
               className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover:rotate-90 group z-10"
             >
-              <X className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-orange-600" />
+              <X className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-orange-600" aria-hidden="true" />
             </button>
 
             {/* Success State */}
@@ -139,7 +137,7 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                 <div className="p-1.5 sm:p-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg shadow-orange-500/50 animate-pulse">
                   <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-navy-600 to-orange-600 bg-clip-text text-transparent">
+                <h2 id="quote-modal-title" className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-navy-600 to-orange-600 bg-clip-text text-transparent">
                   Get Your Custom Quote
                 </h2>
               </div>
@@ -170,28 +168,31 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                   <button
                     type="button"
                     onClick={() => setError(null)}
+                    aria-label="Dismiss error message"
                     className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded transition-colors"
                   >
-                    <X className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    <X className="w-4 h-4 text-red-600 dark:text-red-400" aria-hidden="true" />
                   </button>
                 </div>
               )}
 
               {/* Name Field */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                  <User className={`w-4 h-4 transition-colors ${focusedField === 'name' ? 'text-orange-600' : 'text-gray-400'}`} />
+                <label htmlFor="quote-name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                  <User className={`w-4 h-4 transition-colors ${focusedField === 'name' ? 'text-orange-600' : 'text-gray-400'}`} aria-hidden="true" />
                   Your Name
                 </label>
                 <div className="relative">
                   <input
                     type="text"
+                    id="quote-name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                     required
+                    autoComplete="name"
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 outline-none dark:text-white"
                   />
                   {formData.name && (
@@ -202,19 +203,21 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
 
               {/* Phone Field */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                  <Phone className={`w-4 h-4 transition-colors ${focusedField === 'phone' ? 'text-orange-600' : 'text-gray-400'}`} />
+                <label htmlFor="quote-phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                  <Phone className={`w-4 h-4 transition-colors ${focusedField === 'phone' ? 'text-orange-600' : 'text-gray-400'}`} aria-hidden="true" />
                   Phone Number
                 </label>
                 <div className="relative">
                   <input
                     type="tel"
+                    id="quote-phone"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     onFocus={() => setFocusedField('phone')}
                     onBlur={() => setFocusedField(null)}
                     required
+                    autoComplete="tel"
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 outline-none dark:text-white"
                   />
                   {formData.phone && (
@@ -225,8 +228,8 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
 
               {/* Product Selection Dropdown */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                  <ChevronDown className={`w-4 h-4 transition-colors ${focusedField === 'selectedProduct' ? 'text-orange-600' : 'text-gray-400'}`} />
+                <label id="quote-product-label" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                  <ChevronDown className={`w-4 h-4 transition-colors ${focusedField === 'selectedProduct' ? 'text-orange-600' : 'text-gray-400'}`} aria-hidden="true" />
                   Select Product
                 </label>
                 <div className="relative">
@@ -239,6 +242,9 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                       setFocusedField(null);
                       setTimeout(() => setIsDropdownOpen(false), 150);
                     }}
+                    aria-labelledby="quote-product-label"
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="listbox"
                     className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 rounded-xl transition-all duration-300 outline-none text-left flex items-center justify-between ${isDropdownOpen || focusedField === 'selectedProduct'
                         ? 'border-orange-500 ring-4 ring-orange-500/20'
                         : 'border-gray-200 dark:border-gray-700'
@@ -296,23 +302,16 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 p-[2px] transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4 rounded-xl flex items-center justify-center gap-2">
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span className="font-bold text-white">Sending Request...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" />
-                      <span className="font-bold text-white">Get My Custom Quote</span>
-                      <Sparkles className="w-5 h-5 text-white group-hover:-rotate-12 transition-transform" />
-                    </>
-                  )}
-                </div>
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Sending Request...
+                  </span>
+                ) : (
+                  'Get My Custom Quote'
+                )}
               </button>
 
               {/* Trust indicators */}
@@ -331,7 +330,6 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                 </div>
               </div>
             </form>
-          </div>
         </div>
       </div>
     </div>

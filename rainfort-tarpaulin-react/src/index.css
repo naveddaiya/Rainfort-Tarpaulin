@@ -15,7 +15,7 @@
     --secondary: 217.2 32.6% 34.5%; /* Charcoal */
     --secondary-foreground: 210 40% 98%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 20% 35%;
     --accent: 27 100% 50%; /* Safety Orange */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
@@ -38,7 +38,7 @@
     --secondary: 217.2 32.6% 34.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 25% 75%;
     --accent: 27 100% 50%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
@@ -59,7 +59,6 @@
 }
 
 @layer utilities {
-  /* Modern Design Utilities */
   .industrial-texture {
     background-image:
       linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
@@ -67,65 +66,7 @@
     background-size: 20px 20px;
   }
 
-  .metal-border {
-    border: 2px solid;
-    border-image: linear-gradient(135deg, #d1d5db 0%, #9ca3af 50%, #d1d5db 100%) 1;
-  }
-
   .heavy-shadow {
-    box-shadow:
-      0 10px 25px -5px rgba(0, 0, 0, 0.15),
-      0 5px 10px -5px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  }
-
-  .glow-effect {
-    box-shadow:
-      0 0 20px rgba(255, 107, 0, 0.3),
-      0 0 40px rgba(255, 107, 0, 0.2),
-      0 0 60px rgba(255, 107, 0, 0.1);
-  }
-
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-navy-600 via-orange-500 to-navy-600 bg-clip-text text-transparent;
-  }
-
-  .rugged-button {
-    @apply font-bold uppercase tracking-wider border-2 px-6 py-3 text-sm rounded-lg
-           transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95
-           heavy-shadow;
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
-  }
-
-  @keyframes gradient-shift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .float-animation {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   }
 }

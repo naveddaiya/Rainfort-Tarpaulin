@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { QuoteModal } from '@/components/ui/quote-modal';
@@ -8,34 +8,39 @@ import { cn } from '@/lib/utils';
 const IndustrialNav = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+  const lastScrollYRef = useRef(0);
+  const ticking = useRef(false);
 
-      // Determine if scrolled past threshold
+  const handleScroll = useCallback(() => {
+    if (ticking.current) return;
+    ticking.current = true;
+
+    requestAnimationFrame(() => {
+      const currentScrollY = window.scrollY;
+      const prevScrollY = lastScrollYRef.current;
+
       setIsScrolled(currentScrollY > 20);
 
-      // Auto-hide logic: hide on scroll down, show on scroll up
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down & past 100px
+      if (currentScrollY > prevScrollY && currentScrollY > 100) {
         setIsVisible(false);
-        setIsMobileMenuOpen(false); // Close mobile menu on scroll
+        setIsMobileMenuOpen(false);
       } else {
-        // Scrolling up or at top
         setIsVisible(true);
       }
 
-      setLastScrollY(currentScrollY);
-    };
+      lastScrollYRef.current = currentScrollY;
+      ticking.current = false;
+    });
+  }, []);
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [handleScroll]);
 
   const navLinks = [
     { href: '#home', label: 'Home' },
@@ -67,10 +72,10 @@ const IndustrialNav = () => {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out",
+          "fixed top-0 left-0 right-0 z-50 transition-transform duration-300",
           isScrolled
-            ? "bg-white/95 backdrop-blur-xl border-b-2 border-orange-200/50 shadow-2xl shadow-navy-500/10"
-            : "bg-white/80 backdrop-blur-md",
+            ? "bg-background border-b border-border shadow-md"
+            : "bg-background/95",
           isVisible ? "translate-y-0" : "-translate-y-full"
         )}
       >
@@ -83,8 +88,12 @@ const IndustrialNav = () => {
               className="flex items-center -ml-6 hover:opacity-90 transition-all duration-300 hover:scale-105"
             >
               <img
-                src="/new.png"
-                alt="RainFort Logo"
+                src="/new-optimized.webp"
+                alt="RainFort Tarpaulin - Industrial Grade Waterproof Covers"
+                width={80}
+                height={80}
+                fetchPriority="high"
+                decoding="async"
                 className="h-20 w-auto object-contain mt-1"
               />
               <div className="flex flex-col -ml-8">
@@ -130,13 +139,17 @@ const IndustrialNav = () => {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden p-2 border-2 border-border bg-background hover:bg-muted transition-colors mr-2"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             </button>
           </div>
 
           {/* Mobile Menu */}
           <div
+            id="mobile-menu"
             className={cn(
               "lg:hidden overflow-hidden transition-all duration-500 ease-in-out",
               isMobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"

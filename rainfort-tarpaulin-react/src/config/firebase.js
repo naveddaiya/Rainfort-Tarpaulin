@@ -1,35 +1,55 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAnalytics } from 'firebase/analytics';
+// Lazy Firebase initialization - only loads when actually needed
+let firebaseApp = null;
+let firestoreDb = null;
 
-// Firebase configuration from environment variables
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+/**
+ * Get Firebase App - lazy initialization
+ */
+export const getFirebaseApp = async () => {
+  if (firebaseApp) return firebaseApp;
+
+  const { initializeApp } = await import('firebase/app');
+
+  const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  };
+
+  firebaseApp = initializeApp(firebaseConfig);
+  console.log('✅ Firebase initialized (lazy)');
+  return firebaseApp;
 };
 
-// Initialize Firebase
-let app;
-let db;
-let analytics;
+/**
+ * Get Firestore DB - lazy initialization
+ */
+export const getDb = async () => {
+  if (firestoreDb) return firestoreDb;
 
-try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
+  const app = await getFirebaseApp();
+  const { getFirestore } = await import('firebase/firestore');
+  firestoreDb = getFirestore(app);
+  return firestoreDb;
+};
 
-  // Initialize Analytics only in production and if measurement ID is provided
-  if (firebaseConfig.measurementId && typeof window !== 'undefined') {
-    analytics = getAnalytics(app);
+/**
+ * Initialize analytics - call this after page is fully loaded
+ */
+export const initAnalytics = async () => {
+  try {
+    const measurementId = import.meta.env.VITE_FIREBASE_MEASUREMENT_ID;
+    if (measurementId) {
+      const app = await getFirebaseApp();
+      const { getAnalytics } = await import('firebase/analytics');
+      return getAnalytics(app);
+    }
+  } catch (e) {
+    // Analytics failed, not critical
   }
-
-  console.log('✅ Firebase initialized successfully');
-} catch (error) {
-  console.error('❌ Firebase initialization error:', error);
-}
-
-export { app, db, analytics };
+  return null;
+};

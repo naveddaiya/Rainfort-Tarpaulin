@@ -5,6 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { QuoteModal } from '@/components/ui/quote-modal';
 import { products, getCategories } from '@/data/products';
 import { useState } from 'react';
+import SEOHead from '@/components/SEOHead';
+import ProductsSEOContent from '@/components/ProductsSEOContent';
+import { generateProductStructuredData, generateFAQStructuredData, productFAQs } from '@/utils/structuredData';
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -28,7 +31,24 @@ const Products = () => {
     { label: "Warranty", value: "1-2 Years" },
   ];
 
+  // Generate combined structured data for products and FAQs
+  const productStructuredData = generateProductStructuredData(products);
+  const faqStructuredData = generateFAQStructuredData(productFAQs);
+
+  // Combine multiple structured data schemas
+  const combinedStructuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      productStructuredData,
+      faqStructuredData
+    ]
+  };
+
   return (
+    <>
+      {/* SEO Meta Tags and Structured Data */}
+      <SEOHead structuredData={combinedStructuredData} />
+
     <div id="products" className="min-h-screen pt-24 pb-20">
       {/* Header */}
       <section className="bg-gradient-to-br from-background via-muted/30 to-background industrial-texture py-16">
@@ -92,8 +112,12 @@ const Products = () => {
                   {product.image ? (
                     <img
                       src={product.image}
-                      alt={product.name}
+                      alt={`${product.name} - ${product.category} Tarpaulin by RainFort`}
+                      width={400}
+                      height={256}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.parentElement.querySelector('.fallback-icon')?.classList.remove('hidden');
@@ -213,6 +237,9 @@ const Products = () => {
         </div>
       </section>
 
+      {/* SEO-Optimized Content Sections */}
+      <ProductsSEOContent />
+
       {/* Quote Modal */}
       <QuoteModal
         isOpen={isQuoteModalOpen}
@@ -223,6 +250,7 @@ const Products = () => {
         productName={selectedProduct}
       />
     </div>
+    </>
   );
 };
 

@@ -1,13 +1,155 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>rainfort-tarpaulin-react</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Preload the navbar logo for instant display -->
+  <link rel="preload" href="/new-optimized.webp" as="image" type="image/webp" />
+
+  <!-- Inline critical CSS for instant loading state -->
+  <style>
+    #root:empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f0f9ff 0%, #fef3e0 50%, #f8fafc 100%);
+    }
+
+    .dark #root:empty {
+      background: linear-gradient(135deg, #0a1628 0%, #0f1d32 50%, #0a1628 100%);
+    }
+
+    #root:empty::after {
+      content: "";
+      width: 40px;
+      height: 40px;
+      border: 4px solid #1e3a5f;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .dark #root:empty::after {
+      border-color: #3375a3;
+      border-top-color: transparent;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <!-- Prevent dark mode flash: apply theme class before render -->
+  <script>
+    (function() {
+      var theme = localStorage.getItem('tarpaulin-theme');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
+  <!-- Primary Meta Tags -->
+  <title>RainFort Tarpaulin - Industrial-Grade Waterproof Tarpaulins & Covers</title>
+  <meta name="title" content="RainFort Tarpaulin - Industrial-Grade Waterproof Tarpaulins & Covers" />
+  <meta name="description"
+    content="RainFort Tarpaulin offers premium quality industrial-grade waterproof tarpaulins, truck covers, pond liners, biofloc tanks, and tent materials. ISO certified with 8+ years experience. Contact: +91 83850 11488" />
+  <meta name="keywords"
+    content="tarpaulin, waterproof covers, truck covers, pond liner, biofloc tank, PVC tarpaulin, HDPE tarpaulin, tent fabric, industrial tarpaulin, waterproof sheets" />
+  <meta name="author" content="RainFort Tarpaulin" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://rainfort-tarpaulin.pages.dev/" />
+
+  <!-- Favicon - industry standard sizes -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rainfort-tarpaulin.pages.dev/" />
+  <meta property="og:title" content="RainFort Tarpaulin - Industrial-Grade Waterproof Tarpaulins & Covers" />
+  <meta property="og:description"
+    content="Premium quality industrial-grade waterproof tarpaulins, truck covers, pond liners, biofloc tanks. ISO certified with 8+ years experience." />
+  <meta property="og:image" content="https://rainfort-tarpaulin.pages.dev/new.png" />
+  <meta property="og:site_name" content="RainFort Tarpaulin" />
+  <meta property="og:locale" content="en_IN" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://rainfort-tarpaulin.pages.dev/" />
+  <meta name="twitter:title" content="RainFort Tarpaulin - Industrial-Grade Waterproof Tarpaulins & Covers" />
+  <meta name="twitter:description"
+    content="Premium quality industrial-grade waterproof tarpaulins, truck covers, pond liners, biofloc tanks. ISO certified with 8+ years experience." />
+  <meta name="twitter:image" content="https://rainfort-tarpaulin.pages.dev/new.png" />
+
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#1e3a5f" />
+  <meta name="format-detection" content="telephone=yes" />
+  <meta name="geo.region" content="IN" />
+  <meta name="geo.placename" content="India" />
+
+  <!-- Structured Data - Local Business -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "RainFort Tarpaulin",
+      "image": "https://rainfort-tarpaulin.pages.dev/new.png",
+      "description": "Industrial-grade waterproof tarpaulins, truck covers, pond liners, biofloc tanks, and tent materials.",
+      "@id": "https://rainfort-tarpaulin.pages.dev/",
+      "url": "https://rainfort-tarpaulin.pages.dev/",
+      "telephone": "+918385011488",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "sameAs": [],
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "5000"
+      }
+    }
+    </script>
+
+  <!-- Structured Data - Organization -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "RainFort Tarpaulin",
+      "url": "https://rainfort-tarpaulin.pages.dev/",
+      "logo": "https://rainfort-tarpaulin.pages.dev/new.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+918385011488",
+        "contactType": "sales",
+        "availableLanguage": ["English", "Hindi"]
+      }
+    }
+    </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

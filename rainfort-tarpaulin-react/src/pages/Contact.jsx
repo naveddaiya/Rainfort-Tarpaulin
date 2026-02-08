@@ -57,8 +57,8 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      details: ["daiyasarfaraz@gmail.com"],
-      action: "mailto:daiyasarfaraz@gmail.com"
+      details: ["enquiry@rainfort.in"],
+      action: "mailto:enquiry@rainfort.in"
     },
     {
       icon: MapPin,
@@ -146,30 +146,34 @@ const Contact = () => {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        <label htmlFor="contact-name" className="text-sm font-bold uppercase tracking-wider text-foreground">
                           Full Name *
                         </label>
                         <input
                           type="text"
+                          id="contact-name"
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
                           required
+                          autoComplete="name"
                           className="w-full px-4 py-3 border-2 border-border bg-background text-foreground focus:border-navy-500 focus:outline-none transition-colors"
                           placeholder="John Doe"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        <label htmlFor="contact-email" className="text-sm font-bold uppercase tracking-wider text-foreground">
                           Email Address *
                         </label>
                         <input
                           type="email"
+                          id="contact-email"
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
                           required
+                          autoComplete="email"
                           className="w-full px-4 py-3 border-2 border-border bg-background text-foreground focus:border-navy-500 focus:outline-none transition-colors"
                           placeholder="john@example.com"
                         />
@@ -178,29 +182,33 @@ const Contact = () => {
 
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        <label htmlFor="contact-phone" className="text-sm font-bold uppercase tracking-wider text-foreground">
                           Phone Number *
                         </label>
                         <input
                           type="tel"
+                          id="contact-phone"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
                           required
+                          autoComplete="tel"
                           className="w-full px-4 py-3 border-2 border-border bg-background text-foreground focus:border-navy-500 focus:outline-none transition-colors"
                           placeholder="+91 12345 67890"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        <label htmlFor="contact-company" className="text-sm font-bold uppercase tracking-wider text-foreground">
                           Company Name
                         </label>
                         <input
                           type="text"
+                          id="contact-company"
                           name="company"
                           value={formData.company}
                           onChange={handleChange}
+                          autoComplete="organization"
                           className="w-full px-4 py-3 border-2 border-border bg-background text-foreground focus:border-navy-500 focus:outline-none transition-colors"
                           placeholder="Your Company"
                         />
@@ -208,10 +216,11 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-bold uppercase tracking-wider text-foreground">
+                      <label htmlFor="contact-message" className="text-sm font-bold uppercase tracking-wider text-foreground">
                         Your Message *
                       </label>
                       <textarea
+                        id="contact-message"
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
