@@ -14,6 +14,7 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
   const [error, setError] = useState(null);
   const [focusedField, setFocusedField] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   const productOptions = [
     ...products.map(p => p.name),
@@ -39,10 +40,41 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
     };
   }, [isOpen]);
 
+  const validatePhone = (phone) => {
+    // Remove all spaces, dashes, and parentheses
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+
+    // Check if it matches Indian mobile number patterns
+    // Accepts: 10 digits, or +91 followed by 10 digits, or 91 followed by 10 digits
+    const patterns = [
+      /^[6-9]\d{9}$/,           // 10 digits starting with 6-9
+      /^\+91[6-9]\d{9}$/,       // +91 followed by 10 digits
+      /^91[6-9]\d{9}$/,         // 91 followed by 10 digits
+    ];
+
+    return patterns.some(pattern => pattern.test(cleanPhone));
+  };
+
+  const validateName = (name) => {
+    // Name should only contain letters, spaces, and common punctuation (., -)
+    return name.trim().length >= 2 && /^[a-zA-Z\s.\-']+$/.test(name);
+  };
+
+  const isPhoneValid = formData.phone ? validatePhone(formData.phone) : false;
+  const isNameValid = formData.name ? validateName(formData.name) : false;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setPhoneError('');
+
+    // Validate phone number
+    if (!validatePhone(formData.phone)) {
+      setPhoneError('Please enter a valid 10-digit mobile number');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       // Submit to Firebase
@@ -74,10 +106,27 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    let filteredValue = value;
+
+    // Filter input based on field type
+    if (name === 'name') {
+      // Only allow letters, spaces, and common name characters (., -, ')
+      filteredValue = value.replace(/[^a-zA-Z\s.\-']/g, '');
+    } else if (name === 'phone') {
+      // Only allow digits, +, -, spaces, and parentheses
+      filteredValue = value.replace(/[^0-9+\-\s()]/g, '');
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: filteredValue
     });
+
+    // Clear phone error when user types
+    if (name === 'phone' && phoneError) {
+      setPhoneError('');
+    }
   };
 
   if (!isOpen) return null;
@@ -194,8 +243,9 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                     required
                     autoComplete="name"
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 outline-none dark:text-white"
+                    placeholder="e.g., John Doe"
                   />
-                  {formData.name && (
+                  {isNameValid && (
                     <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500 animate-in zoom-in-50 duration-300" />
                   )}
                 </div>
@@ -218,12 +268,25 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                     onBlur={() => setFocusedField(null)}
                     required
                     autoComplete="tel"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 outline-none dark:text-white"
+                    placeholder="10-digit mobile number"
+                    className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 rounded-xl focus:ring-4 transition-all duration-300 outline-none dark:text-white ${
+                      phoneError
+                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:ring-orange-500/20'
+                    }`}
                   />
-                  {formData.phone && (
+                  {isPhoneValid && !phoneError && (
                     <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500 animate-in zoom-in-50 duration-300" />
                   )}
+                  {phoneError && (
+                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500 animate-in zoom-in-50 duration-300" />
+                  )}
                 </div>
+                {phoneError && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1 animate-in slide-in-from-top-2 duration-200">
+                    {phoneError}
+                  </p>
+                )}
               </div>
 
               {/* Product Selection Dropdown */}

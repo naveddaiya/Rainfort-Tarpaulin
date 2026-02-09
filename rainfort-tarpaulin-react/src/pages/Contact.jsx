@@ -16,15 +16,56 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [phoneError, setPhoneError] = useState('');
+
+  const validatePhone = (phone) => {
+    // Remove all spaces, dashes, and parentheses
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+
+    // Check if it matches Indian mobile number patterns
+    // Accepts: 10 digits, or +91 followed by 10 digits, or 91 followed by 10 digits
+    const patterns = [
+      /^[6-9]\d{9}$/,           // 10 digits starting with 6-9
+      /^\+91[6-9]\d{9}$/,       // +91 followed by 10 digits
+      /^91[6-9]\d{9}$/,         // 91 followed by 10 digits
+    ];
+
+    return patterns.some(pattern => pattern.test(cleanPhone));
+  };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let filteredValue = value;
+
+    // Filter input based on field type
+    if (name === 'name') {
+      // Only allow letters, spaces, and common name characters (., -, ')
+      filteredValue = value.replace(/[^a-zA-Z\s.\-']/g, '');
+    } else if (name === 'phone') {
+      // Only allow digits, +, -, spaces, and parentheses
+      filteredValue = value.replace(/[^0-9+\-\s()]/g, '');
+    }
+
+    setFormData({ ...formData, [name]: filteredValue });
+
+    // Clear phone error when user types
+    if (name === 'phone' && phoneError) {
+      setPhoneError('');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setPhoneError('');
+
+    // Validate phone number
+    if (!validatePhone(formData.phone)) {
+      setPhoneError('Please enter a valid 10-digit mobile number');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const result = await submitContactMessage(formData);
@@ -193,9 +234,19 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           autoComplete="tel"
-                          className="w-full px-4 py-3 border-2 border-border bg-background text-foreground focus:border-navy-500 focus:outline-none transition-colors"
-                          placeholder="+91 12345 67890"
+                          className={`w-full px-4 py-3 border-2 bg-background text-foreground focus:outline-none transition-colors ${
+                            phoneError
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-border focus:border-navy-500'
+                          }`}
+                          placeholder="10-digit mobile number"
                         />
+                        {phoneError && (
+                          <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                            <AlertCircle className="w-4 h-4" />
+                            {phoneError}
+                          </p>
+                        )}
                       </div>
 
                       <div className="space-y-2">
