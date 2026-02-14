@@ -154,9 +154,9 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
             <button
               onClick={onClose}
               aria-label="Close quote modal"
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover:rotate-90 group z-10"
+              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 ease-out hover:rotate-90 hover:scale-110 active:scale-95 group z-10"
             >
-              <X className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-orange-600" aria-hidden="true" />
+              <X className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-orange-600 transition-colors duration-300" aria-hidden="true" />
             </button>
 
             {/* Success State */}
@@ -336,9 +336,9 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
                               setFormData({ ...formData, selectedProduct: product });
                               setIsDropdownOpen(false);
                             }}
-                            className={`w-full px-4 py-3 text-left transition-all duration-150 flex items-center justify-between ${formData.selectedProduct === product
+                            className={`w-full px-4 py-3 text-left transition-all duration-200 ease-out flex items-center justify-between ${formData.selectedProduct === product
                                 ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 dark:hover:from-gray-700 dark:hover:to-gray-600 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1'
                               }`}
                           >
                             <span>{product}</span>
@@ -365,7 +365,7 @@ export function QuoteModal({ isOpen, onClose, productName = null }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-orange-500/40 hover:brightness-110 active:scale-[0.98] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:translate-y-0"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">

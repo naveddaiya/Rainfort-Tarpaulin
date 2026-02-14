@@ -113,7 +113,7 @@ const IndustrialNav = () => {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-4 py-2 text-sm font-bold uppercase tracking-wider text-foreground hover:text-navy-500 hover:bg-muted transition-all duration-200 border-b-2 border-transparent hover:border-navy-500"
+                  className="px-4 py-2 text-sm font-bold uppercase tracking-wider text-foreground hover:text-navy-500 hover:bg-muted/50 transition-all duration-300 ease-out border-b-2 border-transparent hover:border-navy-500 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   {link.label}
                 </a>
@@ -138,7 +138,7 @@ const IndustrialNav = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 border-2 border-border bg-background hover:bg-muted transition-colors mr-2"
+              className="lg:hidden p-2 border-2 border-border bg-background hover:bg-muted transition-all duration-300 ease-out hover:scale-[1.05] hover:shadow-lg active:scale-95 mr-2"
               aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
@@ -184,7 +184,7 @@ const IndustrialNav = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                    className="w-full justify-start border-2 hover:scale-105 transition-transform"
+                    className="w-full justify-start border-2"
                   >
                     {theme === "light" ? (
                       <>

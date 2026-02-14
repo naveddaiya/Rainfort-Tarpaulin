@@ -181,7 +181,7 @@ const Home = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="bg-white text-navy-600 border-white hover:bg-gray-100 dark:bg-white dark:text-navy-600 dark:hover:bg-gray-200"
+                className="bg-white text-navy-600 border-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:bg-white dark:text-navy-600 dark:hover:from-gray-100 dark:hover:to-gray-200"
                 onClick={() => globalThis.location.href = 'tel:+918385011488'}
               >
                 Call: +91 83850 11488
