@@ -31,7 +31,7 @@ const ProductsSEOContent = () => {
             {/* Tarpaulin Sheets */}
             <Card className="border-2">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground">Tarpaulin Sheets</h3>
+                <p className="text-xl font-bold mb-3 text-foreground">Tarpaulin Sheets</p>
                 <p className="text-sm text-muted-foreground mb-3">
                   General-purpose waterproof sheets suitable for covering goods, construction materials, and temporary shelters. Available in various GSM ratings and sizes to match your specific coverage needs, from small household use to large industrial applications.
                 </p>
@@ -41,7 +41,7 @@ const ProductsSEOContent = () => {
             {/* PVC / Coated Tarpaulin */}
             <Card className="border-2">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground">PVC / Coated Tarpaulin</h3>
+                <p className="text-xl font-bold mb-3 text-foreground">PVC / Coated Tarpaulin</p>
                 <p className="text-sm text-muted-foreground mb-3">
                   Heavy-duty PVC coated tirpal with superior waterproofing and tear resistance. Ideal for long-term outdoor use, transportation covers, and areas exposed to harsh sunlight and heavy rainfall. Our coated tarpaulins maintain flexibility even in extreme temperatures.
                 </p>
@@ -51,7 +51,7 @@ const ProductsSEOContent = () => {
             {/* Tent Fabric */}
             <Card className="border-2">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground">Tent Fabric</h3>
+                <p className="text-xl font-bold mb-3 text-foreground">Tent Fabric</p>
                 <p className="text-sm text-muted-foreground mb-3">
                   Specialized fabric for pandal, shamiyana, and event tents. Designed to handle monsoon conditions while providing adequate ventilation and light diffusion. Available in various colors and finishes to suit wedding events, exhibitions, and outdoor functions.
                 </p>
@@ -61,7 +61,7 @@ const ProductsSEOContent = () => {
             {/* Pond Liners & Fish Tanks */}
             <Card className="border-2">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground">Pond Liners & Fish Tanks</h3>
+                <p className="text-xl font-bold mb-3 text-foreground">Pond Liners & Fish Tanks</p>
                 <p className="text-sm text-muted-foreground mb-3">
                   Food-grade, UV-stabilized liners specifically manufactured for aquaculture and water storage. Our pond liners prevent water seepage, resist algae growth, and maintain water quality for fish farming, biofloc systems, and agricultural water storage.
                 </p>
@@ -71,7 +71,7 @@ const ProductsSEOContent = () => {
             {/* Coated Rolls */}
             <Card className="border-2">
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground">Coated Rolls</h3>
+                <p className="text-xl font-bold mb-3 text-foreground">Coated Rolls</p>
                 <p className="text-sm text-muted-foreground mb-3">
                   Industrial-grade coated fabric supplied in rolls for manufacturers, fabricators, and large-scale projects. Perfect for businesses requiring consistent quality material for producing custom covers, bags, or protective equipment in bulk quantities.
                 </p>
@@ -94,21 +94,21 @@ const ProductsSEOContent = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="border-l-4 border-navy-500 pl-6 py-4">
-                <h3 className="text-xl font-bold mb-2 text-foreground">Monsoon Protection</h3>
+                <p className="text-xl font-bold mb-2 text-foreground">Monsoon Protection</p>
                 <p className="text-sm text-muted-foreground">
                   Our tarpaulins provide reliable waterproofing during India's heavy monsoon season. Protect construction materials, agricultural produce, vehicles, and machinery from water damage with our high-GSM waterproof sheets that can withstand continuous rainfall.
                 </p>
               </div>
 
               <div className="border-l-4 border-navy-500 pl-6 py-4">
-                <h3 className="text-xl font-bold mb-2 text-foreground">Construction Sites</h3>
+                <p className="text-xl font-bold mb-2 text-foreground">Construction Sites</p>
                 <p className="text-sm text-muted-foreground">
                   Cover cement bags, sand, bricks, and equipment at construction sites. Our tear-resistant tarpaulins handle rough use, sharp edges, and frequent movement while keeping materials dry and protected from weather and dust.
                 </p>
               </div>
 
               <div className="border-l-4 border-navy-500 pl-6 py-4">
-                <h3 className="text-xl font-bold mb-2 text-foreground">Agriculture & Farming</h3>
+                <p className="text-xl font-bold mb-2 text-foreground">Agriculture & Farming</p>
                 <p className="text-sm text-muted-foreground">
                   Farmers use our tirpal for grain storage coverage, crop protection during drying, greenhouse covers, and silage protection. The UV-resistant coating ensures longevity even when exposed to direct sunlight throughout the year.
                 </p>
@@ -117,14 +117,14 @@ const ProductsSEOContent = () => {
 
             <div className="space-y-6">
               <div className="border-l-4 border-navy-500 pl-6 py-4">
-                <h3 className="text-xl font-bold mb-2 text-foreground">Warehouse & Transport</h3>
+                <p className="text-xl font-bold mb-2 text-foreground">Warehouse & Transport</p>
                 <p className="text-sm text-muted-foreground">
                   Secure goods during transportation with our durable truck covers. Warehouse owners rely on our tarpaulins for outdoor inventory protection, creating temporary storage areas, and covering loading dock openings during off-hours.
                 </p>
               </div>
 
               <div className="border-l-4 border-navy-500 pl-6 py-4">
-                <h3 className="text-xl font-bold mb-2 text-foreground">Fish Farming & Water Storage</h3>
+                <p className="text-xl font-bold mb-2 text-foreground">Fish Farming & Water Storage</p>
                 <p className="text-sm text-muted-foreground">
                   Our specialized pond liners are extensively used across India for fish farming, prawn cultivation, biofloc tanks, and rainwater harvesting systems. The material is non-toxic, flexible, and designed to last multiple farming cycles.
                 </p>
@@ -173,7 +173,7 @@ const ProductsSEOContent = () => {
             ].map((feature, index) => (
               <Card key={index} className="border-2">
                 <CardContent className="pt-6">
-                  <h3 className="text-lg font-bold mb-2 text-navy-500">{feature.title}</h3>
+                  <p className="text-lg font-bold mb-2 text-navy-500">{feature.title}</p>
                   <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -200,7 +200,7 @@ const ProductsSEOContent = () => {
                     <Badge variant="default" className="w-8 h-8 flex items-center justify-center rounded-full">1</Badge>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-foreground">Manufacturing Quality</h3>
+                    <p className="text-xl font-bold mb-2 text-foreground">Manufacturing Quality</p>
                     <p className="text-sm text-muted-foreground">
                       We operate our own manufacturing facility with quality control at every production stage. Each tarpaulin undergoes waterproofing tests, tear resistance checks, and coating thickness verification before dispatch, ensuring you receive products that perform as specified.
                     </p>
@@ -212,7 +212,7 @@ const ProductsSEOContent = () => {
                     <Badge variant="default" className="w-8 h-8 flex items-center justify-center rounded-full">2</Badge>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-foreground">Customization Capabilities</h3>
+                    <p className="text-xl font-bold mb-2 text-foreground">Customization Capabilities</p>
                     <p className="text-sm text-muted-foreground">
                       Understanding that different industries have unique requirements, we offer complete customization in size, thickness, color, and finishing. Whether you need pond liners for specific tank dimensions or branded tarpaulins with printed logos for your tent business, we accommodate your specifications.
                     </p>
@@ -228,7 +228,7 @@ const ProductsSEOContent = () => {
                     <Badge variant="default" className="w-8 h-8 flex items-center justify-center rounded-full">3</Badge>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-foreground">Bulk Supply & Timely Delivery</h3>
+                    <p className="text-xl font-bold mb-2 text-foreground">Bulk Supply & Timely Delivery</p>
                     <p className="text-sm text-muted-foreground">
                       As manufacturers, we maintain inventory for immediate dispatch of standard sizes while efficiently managing bulk orders for contractors and dealers. Our distribution network covers major Indian cities with reliable logistics partners ensuring timely delivery.
                     </p>
@@ -240,7 +240,7 @@ const ProductsSEOContent = () => {
                     <Badge variant="default" className="w-8 h-8 flex items-center justify-center rounded-full">4</Badge>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-foreground">Designed for Indian Conditions</h3>
+                    <p className="text-xl font-bold mb-2 text-foreground">Designed for Indian Conditions</p>
                     <p className="text-sm text-muted-foreground">
                       Unlike imported alternatives, our tarpaulins are specifically engineered for Indian weather patterns. From Kerala's monsoon intensity to Rajasthan's harsh summer heat, our products are tested and proven in actual Indian field conditions.
                     </p>

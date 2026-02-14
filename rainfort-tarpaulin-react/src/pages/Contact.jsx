@@ -356,7 +356,7 @@ const Contact = () => {
                       <span className="text-xs font-bold text-white">1</span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Quick Response</h4>
+                      <p className="font-bold text-sm">Quick Response</p>
                       <p className="text-sm text-muted-foreground">
                         We'll respond within 24 hours
                       </p>
@@ -367,7 +367,7 @@ const Contact = () => {
                       <span className="text-xs font-bold text-white">2</span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Consultation</h4>
+                      <p className="font-bold text-sm">Consultation</p>
                       <p className="text-sm text-muted-foreground">
                         Discuss your requirements
                       </p>
@@ -378,7 +378,7 @@ const Contact = () => {
                       <span className="text-xs font-bold text-white">3</span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Custom Quote</h4>
+                      <p className="font-bold text-sm">Custom Quote</p>
                       <p className="text-sm text-muted-foreground">
                         Receive detailed pricing
                       </p>

@@ -146,9 +146,9 @@ const Products = () => {
                   <p className="text-sm text-muted-foreground">{product.description}</p>
 
                   <div>
-                    <h4 className="font-bold uppercase text-sm mb-3 text-foreground">
+                    <p className="font-bold uppercase text-sm mb-3 text-foreground">
                       Key Features
-                    </h4>
+                    </p>
                     <ul className="space-y-2">
                       {product.features.map((feature, i) => (
                         <li key={`${product.id}-feature-${i}`} className="flex items-center text-sm text-muted-foreground">
@@ -160,9 +160,9 @@ const Products = () => {
                   </div>
 
                   <div>
-                    <h4 className="font-bold uppercase text-sm mb-3 text-foreground">
+                    <p className="font-bold uppercase text-sm mb-3 text-foreground">
                       Applications
-                    </h4>
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {product.applications.map((app, i) => (
                         <Badge key={`${product.id}-app-${i}`} variant="outline" className="text-xs">

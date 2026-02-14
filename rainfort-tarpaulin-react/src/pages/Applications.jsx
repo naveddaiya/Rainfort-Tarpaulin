@@ -137,9 +137,9 @@ const Applications = () => {
                 </CardHeader>
 
                 <CardContent>
-                  <h4 className="font-bold uppercase text-sm mb-3 text-foreground">
+                  <p className="font-bold uppercase text-sm mb-3 text-foreground">
                     Common Uses
-                  </h4>
+                  </p>
                   <ul className="space-y-2">
                     {app.uses.map((use, i) => (
                       <li
