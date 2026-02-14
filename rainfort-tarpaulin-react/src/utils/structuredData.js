@@ -16,25 +16,22 @@ export const generateProductStructuredData = (products) => {
         "description": product.description,
         "category": product.category,
         "image": product.image,
-        "offers": {
-          "@type": "Offer",
-          "availability": "https://schema.org/InStock",
-          "itemCondition": "https://schema.org/NewCondition",
-          "seller": {
-            "@type": "Organization",
-            "name": "RainFort Tarpaulin"
-          }
+        "brand": {
+          "@type": "Brand",
+          "name": "RainFort Tarpaulin"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "5000",
+          "bestRating": "5",
+          "worstRating": "1"
         },
         "additionalProperty": product.specifications ? [
           {
             "@type": "PropertyValue",
             "name": "Material",
             "value": product.specifications.material
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Thickness",
-            "value": product.specifications.thickness
           },
           {
             "@type": "PropertyValue",
@@ -81,7 +78,7 @@ export const generateManufacturerStructuredData = () => {
     "@type": "Manufacturer",
     "name": "RainFort Tarpaulin",
     "description": "Leading manufacturer of tarpaulin, PVC coated tirpal, tent fabric & pond liners in India",
-    "url": "https://rainfort-tarpaulin.pages.dev/",
+    "url": "https://rainfort.in/",
     "logo": "/rainfort-logo.png",
     "sameAs": [
       // Add your social media links here

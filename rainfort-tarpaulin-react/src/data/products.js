@@ -19,7 +19,6 @@ export const products = [
     badge: "Popular",
     specifications: {
       material: "HDPE (High-Density Polyethylene)",
-      thickness: "200 GSM",
       color: "ALL",
       warranty: "1 Year"
     }
@@ -35,7 +34,6 @@ export const products = [
     badge: "Premium",
     specifications: {
       material: "PVC Coated Fabric",
-      thickness: "300 GSM",
       color: "ALL",
       warranty: "2 Years"
     }
@@ -51,7 +49,6 @@ export const products = [
     badge: "Specialized",
     specifications: {
       material: "HDPE",
-      thickness: "250 GSM",
       color: "ALL",
       warranty: "2 Years"
     }
@@ -67,7 +64,6 @@ export const products = [
     badge: "Advanced",
     specifications: {
       material: "PVC Coated Fabric",
-      thickness: "500 GSM",
       color: "ALL",
       warranty: "2 Years"
     }
@@ -83,7 +79,6 @@ export const products = [
     badge: "Industrial",
     specifications: {
       material: "PVC Laminated Fabric",
-      thickness: "400 GSM",
       color: "White",
       warranty: "2 Years"
     }
@@ -99,7 +94,6 @@ export const products = [
     badge: "Classic",
     specifications: {
       material: "Cotton Canvas",
-      thickness: "350 GSM",
       color: "ALL",
       warranty: "4 Year"
     }
@@ -118,7 +112,6 @@ export const products = [
     badge: "New", // or "Popular", "Premium", etc.
     specifications: {
       material: "Material name",
-      thickness: "XXX GSM",
       color: "Color options",
       warranty: "X Years"
     }
