@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 210 100% 29%; /* Navy */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 34.5%; /* Charcoal */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 20% 35%;
+    --accent: 27 100% 50%; /* Safety Orange */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 210 100% 29%;
+    --radius: 0.75rem; /* Increased border radius for modern look */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 217.2 32.6% 17.5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 100% 29%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 34.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 25% 75%;
+    --accent: 27 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 27.5%;
+    --input: 217.2 32.6% 27.5%;
+    --ring: 210 100% 45%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .industrial-texture {
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .heavy-shadow {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+}
