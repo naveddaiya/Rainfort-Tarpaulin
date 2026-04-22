@@ -17,6 +17,11 @@ export const products = [
     features: ["UV Protected", "Tear Resistant", "Lightweight", "100% Waterproof"],
     applications: ["Construction", "Agriculture", "Storage"],
     badge: "Popular",
+    priceRange: "₹850 – ₹3,200",
+    variants: {
+      sizes: ["6×4 ft", "8×6 ft", "10×8 ft", "12×10 ft", "14×12 ft", "Custom Size"],
+      gsm: ["90 GSM", "120 GSM", "150 GSM", "200 GSM"],
+    },
     specifications: {
       material: "HDPE (High-Density Polyethylene)",
       color: "ALL",
@@ -32,6 +37,11 @@ export const products = [
     features: ["100% Waterproof", "Heavy Duty", "All Weather", "Long-lasting"],
     applications: ["Outdoor Storage", "Vehicle Cover", "Industrial"],
     badge: "Premium",
+    priceRange: "₹1,200 – ₹5,500",
+    variants: {
+      sizes: ["6×4 ft", "8×6 ft", "10×8 ft", "12×10 ft", "16×12 ft", "Custom Size"],
+      gsm: ["150 GSM", "200 GSM", "250 GSM", "300 GSM"],
+    },
     specifications: {
       material: "PVC Coated Fabric",
       color: "ALL",
@@ -47,6 +57,11 @@ export const products = [
     features: ["Leak Proof", "Fish Safe", "UV Stabilized", "Flexible"],
     applications: ["Aquaculture", "Water Storage", "Farming"],
     badge: "Specialized",
+    priceRange: "₹4,500 – ₹18,000",
+    variants: {
+      sizes: ["10×10 ft", "12×12 ft", "15×15 ft", "20×20 ft", "Custom Size"],
+      gsm: ["200 GSM", "250 GSM", "300 GSM"],
+    },
     specifications: {
       material: "HDPE",
       color: "ALL",
@@ -62,6 +77,11 @@ export const products = [
     features: ["Durable", "Easy Setup", "Chemical Resistant", "Eco-friendly"],
     applications: ["Fish Farming", "Shrimp Farming", "Commercial"],
     badge: "Advanced",
+    priceRange: "₹3,800 – ₹22,000",
+    variants: {
+      sizes: ["8 ft dia", "10 ft dia", "12 ft dia", "15 ft dia", "Custom Size"],
+      gsm: ["200 GSM", "250 GSM", "300 GSM"],
+    },
     specifications: {
       material: "PVC Coated Fabric",
       color: "ALL",
@@ -77,6 +97,11 @@ export const products = [
     features: ["Weatherproof", "Reinforced Edges", "Custom Sizes", "Heavy Duty"],
     applications: ["Tent Making", "Covers", "General Use"],
     badge: "Industrial",
+    priceRange: "₹950 – ₹4,200 / roll",
+    variants: {
+      sizes: ["50 m roll", "100 m roll", "Custom Length"],
+      gsm: ["150 GSM", "200 GSM", "250 GSM", "300 GSM"],
+    },
     specifications: {
       material: "PVC Laminated Fabric",
       color: "White",
@@ -92,6 +117,11 @@ export const products = [
     features: ["Breathable", "Strong", "Natural Material", "Eco-friendly"],
     applications: ["Agriculture", "Water Harvesting", "General Use"],
     badge: "Classic",
+    priceRange: "₹1,100 – ₹8,500",
+    variants: {
+      sizes: ["10×10 ft", "15×15 ft", "20×20 ft", "25×25 ft", "Custom Size"],
+      gsm: ["200 GSM", "300 GSM", "400 GSM", "500 GSM"],
+    },
     specifications: {
       material: "Cotton Canvas",
       color: "ALL",
@@ -110,6 +140,11 @@ export const products = [
     features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
     applications: ["Use Case 1", "Use Case 2", "Use Case 3"],
     badge: "New", // or "Popular", "Premium", etc.
+    priceRange: "₹XXX – ₹XXX",
+    variants: {
+      sizes: ["Size 1", "Size 2", "Custom Size"],
+      gsm: ["120 GSM", "150 GSM", "200 GSM"],
+    },
     specifications: {
       material: "Material name",
       color: "Color options",
@@ -121,31 +156,19 @@ export const products = [
 
 /**
  * Get featured products for home page
- * You can customize which products appear on home page
  */
 export const getFeaturedProducts = () => {
-  // Returns first 3 products by default
-  // Modify this logic to show specific products
   return products.slice(0, 3);
 };
 
-/**
- * Get product by ID
- */
 export const getProductById = (id) => {
   return products.find(product => product.id === id);
 };
 
-/**
- * Get products by category
- */
 export const getProductsByCategory = (category) => {
   return products.filter(product => product.category === category);
 };
 
-/**
- * Get all unique categories
- */
 export const getCategories = () => {
   return [...new Set(products.map(product => product.category))];
 };

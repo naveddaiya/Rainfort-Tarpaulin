@@ -8,6 +8,11 @@
   <!-- Preload the navbar logo for instant display -->
   <link rel="preload" href="/new-optimized.webp" as="image" type="image/webp" />
 
+  <!-- Typography: Bebas Neue (mega hero) + Barlow Condensed (display) + Outfit (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <!-- Inline critical CSS for instant loading state -->
   <style>
     #root:empty {
@@ -15,11 +20,11 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #f0f9ff 0%, #fef3e0 50%, #f8fafc 100%);
+      background: linear-gradient(135deg, #f5f3ef 0%, #f0ede6 50%, #f5f3ef 100%);
     }
 
     .dark #root:empty {
-      background: linear-gradient(135deg, #0a1628 0%, #0f1d32 50%, #0a1628 100%);
+      background: linear-gradient(135deg, #070a10 0%, #0c1220 50%, #070a10 100%);
     }
 
     #root:empty::after {
@@ -67,11 +72,9 @@
   <!-- Canonical URL -->
   <link rel="canonical" href="https://rainfort.in/" />
 
-  <!-- Favicon - industry standard sizes -->
-  <link rel="icon" href="/favicon.ico" sizes="48x48" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/rainfort-logo.png" />
+  <link rel="apple-touch-icon" href="/rainfort-logo.png" />
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Open Graph / Facebook -->
@@ -92,8 +95,12 @@
     content="Premium quality industrial-grade waterproof tarpaulins, truck covers, pond liners, biofloc tanks. ISO certified with 8+ years experience." />
   <meta name="twitter:image" content="https://rainfort.in/new.png" />
 
-  <!-- Additional SEO -->
+  <!-- PWA & Additional SEO -->
   <meta name="theme-color" content="#1e3a5f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="RainFort" />
   <meta name="format-detection" content="telephone=yes" />
   <meta name="geo.region" content="IN" />
   <meta name="geo.placename" content="India" />

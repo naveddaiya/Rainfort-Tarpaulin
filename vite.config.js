@@ -39,6 +39,9 @@ export default defineConfig({
           if (id.includes('node_modules/@emailjs')) {
             return 'emailjs';
           }
+          if (id.includes('node_modules/jspdf')) {
+            return 'jspdf';
+          }
         },
       },
     },
