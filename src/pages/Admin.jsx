@@ -319,53 +319,43 @@ export default function Admin() {
     <div className="min-h-screen pt-24 pb-16">
       {/* Header */}
       <div className="border-b-2 border-border bg-muted/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold uppercase tracking-wider">Admin Panel</h1>
+              <h1 className="text-xl sm:text-2xl font-bold uppercase tracking-wider">Admin Panel</h1>
               <div className="flex items-center gap-2 mt-1">
                 <img src={user.photoURL || ''} alt="" className="h-5 w-5 rounded-full border border-border"
                   onError={(e) => { e.target.style.display = 'none'; }} />
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate max-w-[200px] sm:max-w-none">
                   {user.displayName} · <span className="font-medium">{orders.length} orders</span>
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading} className="gap-2 border-2">
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading} className="gap-1.5 border-2 px-2 sm:px-3">
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
               </Button>
-              <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2 border-2 text-destructive border-destructive/30">
-                <LogOut className="h-4 w-4" /> Logout
+              <Button variant="outline" size="sm" onClick={handleLogout} className="gap-1.5 border-2 text-destructive border-destructive/30 px-2 sm:px-3">
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
-          {/* Tabs */}
-          <div className="flex gap-1 mt-4">
-            <button onClick={() => setActiveTab('orders')}
-              className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-t-lg border-2 border-b-0 transition-colors ${
-                activeTab === 'orders' ? 'bg-background border-border' : 'bg-muted/30 border-transparent text-muted-foreground hover:text-foreground'
+          {/* Tabs — scrollable on mobile */}
+          <div className="flex gap-1 mt-4 overflow-x-auto scrollbar-none -mb-px">
+            {[
+              { key: 'orders',     icon: Package,    label: 'Orders',     onClick: () => setActiveTab('orders') },
+              { key: 'analytics',  icon: BarChart3,  label: 'Analytics',  onClick: () => setActiveTab('analytics') },
+              { key: 'products',   icon: LayoutGrid, label: 'Products',   onClick: () => { setActiveTab('products'); setShowProductForm(false); setEditingProduct(null); } },
+              { key: 'categories', icon: Tag,        label: 'Categories', onClick: () => { setActiveTab('categories'); setShowCategoryForm(false); setEditingCategory(null); } },
+            ].map(({ key, icon: Icon, label, onClick }) => (
+              <button key={key} onClick={onClick} className={`flex items-center gap-1.5 whitespace-nowrap px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold uppercase tracking-wider rounded-t-lg border-2 border-b-0 flex-shrink-0 transition-colors ${
+                activeTab === key ? 'bg-background border-border' : 'bg-muted/30 border-transparent text-muted-foreground hover:text-foreground'
               }`}>
-              <Package className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Orders
-            </button>
-            <button onClick={() => setActiveTab('analytics')}
-              className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-t-lg border-2 border-b-0 transition-colors ${
-                activeTab === 'analytics' ? 'bg-background border-border' : 'bg-muted/30 border-transparent text-muted-foreground hover:text-foreground'
-              }`}>
-              <BarChart3 className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Analytics
-            </button>
-            <button onClick={() => { setActiveTab('products'); setShowProductForm(false); setEditingProduct(null); }}
-              className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-t-lg border-2 border-b-0 transition-colors ${
-                activeTab === 'products' ? 'bg-background border-border' : 'bg-muted/30 border-transparent text-muted-foreground hover:text-foreground'
-              }`}>
-              <LayoutGrid className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Products
-            </button>
-            <button onClick={() => { setActiveTab('categories'); setShowCategoryForm(false); setEditingCategory(null); }}
-              className={`px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-t-lg border-2 border-b-0 transition-colors ${
-                activeTab === 'categories' ? 'bg-background border-border' : 'bg-muted/30 border-transparent text-muted-foreground hover:text-foreground'
-              }`}>
-              <Tag className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Categories
-            </button>
+                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> {label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -382,13 +372,13 @@ export default function Admin() {
               { icon: TrendingUp, label: 'Last 30 Days', value: analytics.recentOrders, color: 'text-purple-600' },
             ].map(({ icon: Icon, label, value, color }) => (
               <Card key={label}>
-                <CardContent className="p-5 flex items-center gap-4">
-                  <div className={`p-3 rounded-xl bg-muted/30 border border-border ${color}`}>
-                    <Icon className="h-6 w-6" />
+                <CardContent className="p-3 sm:p-5 flex items-center gap-3 sm:gap-4">
+                  <div className={`p-2 sm:p-3 rounded-xl bg-muted/30 border border-border flex-shrink-0 ${color}`}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold">{value}</p>
-                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</p>
+                  <div className="min-w-0">
+                    <p className="text-xl sm:text-2xl font-bold">{value}</p>
+                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground leading-tight">{label}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -564,29 +554,29 @@ export default function Admin() {
               return (
                 <Card key={order.id} className="overflow-hidden">
                   {/* Order Top Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b-2 border-border bg-muted/20">
-                    <div className="flex items-center gap-3">
-                      <StatusIcon className={`h-4 w-4 ${statusCfg.color}`} />
-                      <div>
-                        <p className="text-xs text-muted-foreground">Order ID</p>
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b-2 border-border bg-muted/20">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                      <StatusIcon className={`h-4 w-4 flex-shrink-0 ${statusCfg.color}`} />
+                      <div className="min-w-0">
+                        <p className="text-[10px] text-muted-foreground">Order ID</p>
                         <p className="text-sm font-bold font-mono">#{order.id.slice(0, 8).toUpperCase()}</p>
                       </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Date</p>
-                        <p className="text-sm font-medium">{orderDate}</p>
+                      <div className="hidden sm:block">
+                        <p className="text-[10px] text-muted-foreground">Date</p>
+                        <p className="text-xs sm:text-sm font-medium">{orderDate}</p>
                       </div>
                     </div>
 
                     {/* Status Selector */}
-                    <div className="flex items-center gap-2">
-                      {updatingId === order.id ? (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {updatingId === order.id && (
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                      ) : null}
+                      )}
                       <select
                         value={order.status}
                         onChange={(e) => updateStatus(order.id, e.target.value)}
                         disabled={updatingId === order.id}
-                        className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border-2 border-border bg-background focus:outline-none focus:border-navy-500 transition-colors cursor-pointer disabled:opacity-60"
+                        className="text-xs font-bold uppercase tracking-wider px-2 sm:px-3 py-1.5 rounded-lg border-2 border-border bg-background focus:outline-none focus:border-navy-500 transition-colors cursor-pointer disabled:opacity-60"
                       >
                         {STATUS_OPTIONS.map(s => (
                           <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
@@ -594,9 +584,13 @@ export default function Admin() {
                       </select>
                     </div>
                   </div>
+                  {/* Date row visible only on mobile */}
+                  <div className="sm:hidden px-4 pt-2 pb-0">
+                    <p className="text-xs text-muted-foreground">{orderDate}</p>
+                  </div>
 
-                  <CardContent className="p-5">
-                    <div className="grid md:grid-cols-3 gap-6">
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
                       {/* Customer */}
                       <div className="space-y-2">
                         <p className="text-xs font-bold uppercase tracking-widest text-orange-500">Customer</p>
@@ -657,20 +651,23 @@ export default function Admin() {
 
           {/* Header */}
           {!showCategoryForm && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-bold uppercase tracking-wider">Product Categories</h2>
+                <h2 className="text-base sm:text-lg font-bold uppercase tracking-wider">Product Categories</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {fsCategories.length} categor{fsCategories.length !== 1 ? 'ies' : 'y'} · shown on homepage & browsable by customers
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={fetchCategories} disabled={categoriesLoading} className="gap-2 border-2">
-                  <RefreshCw className={`h-4 w-4 ${categoriesLoading ? 'animate-spin' : ''}`} /> Refresh
+              <div className="flex gap-2 flex-shrink-0">
+                <Button variant="outline" size="sm" onClick={fetchCategories} disabled={categoriesLoading} className="gap-1.5 border-2 px-2 sm:px-3">
+                  <RefreshCw className={`h-4 w-4 ${categoriesLoading ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline">Refresh</span>
                 </Button>
-                <Button variant="accent" size="sm" className="gap-2 font-bold uppercase tracking-wider"
+                <Button variant="accent" size="sm" className="gap-1.5 font-bold uppercase tracking-wider px-2 sm:px-3"
                   onClick={() => { setEditingCategory(null); setShowCategoryForm(true); }}>
-                  <PlusCircle className="h-4 w-4" /> Add Category
+                  <PlusCircle className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add Category</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </div>
             </div>
@@ -809,24 +806,23 @@ export default function Admin() {
 
           {/* Header row */}
           {!showProductForm && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-bold uppercase tracking-wider">Product Catalog</h2>
+                <h2 className="text-base sm:text-lg font-bold uppercase tracking-wider">Product Catalog</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {fsProducts.length} custom product{fsProducts.length !== 1 ? 's' : ''} added · Static catalog has 6 base products
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={fetchProducts} disabled={productsLoading} className="gap-2 border-2">
-                  <RefreshCw className={`h-4 w-4 ${productsLoading ? 'animate-spin' : ''}`} /> Refresh
+              <div className="flex gap-2 flex-shrink-0">
+                <Button variant="outline" size="sm" onClick={fetchProducts} disabled={productsLoading} className="gap-1.5 border-2 px-2 sm:px-3">
+                  <RefreshCw className={`h-4 w-4 ${productsLoading ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline">Refresh</span>
                 </Button>
-                <Button
-                  variant="accent"
-                  size="sm"
-                  className="gap-2 font-bold uppercase tracking-wider"
-                  onClick={() => { setEditingProduct(null); setShowProductForm(true); }}
-                >
-                  <PlusCircle className="h-4 w-4" /> Add Product
+                <Button variant="accent" size="sm" className="gap-1.5 font-bold uppercase tracking-wider px-2 sm:px-3"
+                  onClick={() => { setEditingProduct(null); setShowProductForm(true); }}>
+                  <PlusCircle className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add Product</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </div>
             </div>
