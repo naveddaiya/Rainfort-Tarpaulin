@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admin emails allowed to write
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'daiyasarfaraz@gmail.com' ||
+        request.auth.token.email == 'daiyanaved3@gmail.com'
+      );
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Categories — public read, admin write
+    match /categories/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Products — public read, admin write
+    match /products/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders — authenticated users can create their own orders; admin can read/update all
+    match /orders/{docId} {
+      allow create: if isAuthenticated();
+      allow read, update: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Quotes — anyone can submit, admin can read
+    match /quotes/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Package, ShoppingCart, Search, X, Heart, Zap, Loader2, Star } from 'lucide-react';
+import { Package, ShoppingCart, Search, X, Heart, Loader2, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { products as staticProducts } from '@/data/products';
@@ -296,19 +296,18 @@ const Products = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-8 sm:h-10 gap-1 sm:gap-1.5 text-[10px] sm:text-xs px-2 sm:px-3"
+                          className="h-9 sm:h-10 gap-1 sm:gap-1.5 text-xs font-semibold px-2 sm:px-3 border-2"
                           onClick={() => handleAddToCart(product)}
                         >
-                          <ShoppingCart className="h-3 sm:h-3.5 w-3 sm:w-3.5 flex-shrink-0" />
+                          <ShoppingCart className="h-3.5 w-3.5 flex-shrink-0" />
                           <span className="truncate">{addedIds[product.id] ? 'Added ✓' : 'Add to Cart'}</span>
                         </Button>
                         <Button
                           variant="accent"
                           size="sm"
-                          className="h-8 sm:h-10 gap-1 sm:gap-1.5 text-[10px] sm:text-xs px-2 sm:px-3 buy-glow"
+                          className="h-9 sm:h-10 text-xs font-semibold px-2 sm:px-3 buy-glow"
                           onClick={() => handleBuyNow(product)}
                         >
-                          <Zap className="h-3 sm:h-3.5 w-3 sm:w-3.5 flex-shrink-0" />
                           Buy Now
                         </Button>
                       </div>

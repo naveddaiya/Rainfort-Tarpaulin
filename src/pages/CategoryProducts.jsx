@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import { ArrowLeft, Package, ShoppingCart, Heart, Zap, Search, X, Loader2, Star } from 'lucide-react';
+import { ArrowLeft, Package, ShoppingCart, Heart, Search, X, Loader2, Star } from 'lucide-react';
 import { useCategories } from '@/hooks/useCategories';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
@@ -255,12 +255,12 @@ export default function CategoryProducts() {
                   </p>
 
                   <div className="grid grid-cols-2 gap-2 pt-1">
-                    <Button variant="outline" size="sm" className="h-10 gap-1.5 text-xs" onClick={() => handleAddToCart(product)}>
+                    <Button variant="outline" size="sm" className="h-10 gap-1.5 text-xs font-semibold border-2" onClick={() => handleAddToCart(product)}>
                       <ShoppingCart className="h-3.5 w-3.5 flex-shrink-0" />
                       {addedIds[product.id] ? 'Added ✓' : 'Add to Cart'}
                     </Button>
-                    <Button variant="accent" size="sm" className="h-10 gap-1.5 text-xs buy-glow" onClick={() => handleBuyNow(product)}>
-                      <Zap className="h-3.5 w-3.5 flex-shrink-0" /> Buy Now
+                    <Button variant="accent" size="sm" className="h-10 text-xs font-semibold buy-glow" onClick={() => handleBuyNow(product)}>
+                      Buy Now
                     </Button>
                   </div>
 

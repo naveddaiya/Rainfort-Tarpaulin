@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { ArrowLeft, ShoppingCart, CheckCircle, Shield, Package, Truck, Star, Phone, MessageCircle, Heart, Zap, Ruler, Layers } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, CheckCircle, Shield, Package, Truck, Star, Phone, MessageCircle, Heart, Ruler, Layers } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -331,21 +331,20 @@ export default function ProductDetail() {
                 <Button
                   size="lg"
                   variant="accent"
-                  className="gap-2 text-sm font-bold uppercase tracking-wider buy-glow"
+                  className="h-12 text-sm font-bold tracking-wide buy-glow"
                   onClick={handleBuyNow}
                 >
-                  <Zap className="h-5 w-5 flex-shrink-0" />
                   Buy Now
                 </Button>
                 <Button
                   size="lg"
                   variant={added ? 'default' : 'outline'}
-                  className="gap-2 text-sm font-bold uppercase tracking-wider"
+                  className="h-12 gap-2 text-sm font-bold tracking-wide border-2"
                   onClick={handleAddToCart}
                 >
                   {added
-                    ? <><CheckCircle className="h-5 w-5 flex-shrink-0" /> Added!</>
-                    : <><ShoppingCart className="h-5 w-5 flex-shrink-0" /> {isInCart ? 'Add Again' : 'Add to Cart'}</>
+                    ? <><CheckCircle className="h-4 w-4 flex-shrink-0" /> Added!</>
+                    : <><ShoppingCart className="h-4 w-4 flex-shrink-0" /> Add to Cart</>
                   }
                 </Button>
               </div>

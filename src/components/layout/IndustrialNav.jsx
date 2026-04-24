@@ -111,28 +111,28 @@ const IndustrialNav = () => {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className={cn(
             'flex items-center justify-between transition-all duration-400',
-            isScrolled ? 'h-16' : 'h-[72px]',
+            isScrolled ? 'h-[72px]' : 'h-[84px]',
           )}>
 
             {/* ── Logo ── */}
             <a
               href="#home"
               onClick={e => handleNavClick(e, { scrollId: 'home' })}
-              className="flex items-center gap-2.5 group flex-shrink-0"
+              className="flex items-center gap-1.5 group flex-shrink-0"
             >
               <img
                 src="/rainfort-logo.png"
                 alt="RainFort Tarpaulin"
-                width={44} height={44}
+                width={60} height={60}
                 fetchPriority="high" decoding="async"
                 className="object-contain flex-shrink-0 group-hover:scale-[1.04] transition-transform duration-300"
-                style={{ height: '44px', width: '44px' }}
+                style={{ height: '60px', width: '60px' }}
               />
-              <div className="flex flex-col">
-                <span className="text-[16px] font-bold uppercase tracking-wide text-white group-hover:text-safety-300 transition-colors duration-200">
-                  RainFort
+              <div className="flex flex-col leading-tight">
+                <span className="text-[22px] font-extrabold uppercase tracking-wide transition-colors duration-200">
+                  <span className="text-white group-hover:text-white/90">Rain</span><span className="text-safety-400 group-hover:text-safety-300">Fort</span>
                 </span>
-                <span className="text-[9px] font-medium uppercase tracking-[0.22em] text-white/30">
+                <span className="text-[14px] font-semibold uppercase tracking-[0.18em] text-white/55 group-hover:text-white/70 transition-colors duration-200">
                   Tarpaulin
                 </span>
               </div>

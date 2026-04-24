@@ -3,16 +3,12 @@
  * Images are uploaded to Cloudinary (free tier) with a real progress bar.
  */
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X, Plus, Trash2, Upload, Loader2, CheckCircle, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { addProduct, updateProduct } from '@/services/productService';
 import { uploadToCloudinary } from '@/services/cloudinaryService';
-
-const CATEGORIES = [
-  'Heavy Duty', 'Industrial', 'Agricultural', 'Truck & Transport',
-  'Waterproof', 'Fire Retardant', 'Export Quality', 'Custom',
-];
+import { getCategories } from '@/services/categoryService';
 
 const BADGE_OPTIONS = ['Popular', 'Premium', 'Specialized', 'Advanced', 'Industrial', 'Classic', 'New'];
 
@@ -65,7 +61,12 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
   const [uploadProgress, setUploadProgress] = useState(null); // null | 0–100
   const [saving, setSaving]           = useState(false);
   const [error, setError]             = useState('');
+  const [fsCategories, setFsCategories] = useState([]);
   const fileRef = useRef();
+
+  useEffect(() => {
+    getCategories().then(setFsCategories).catch(() => {});
+  }, []);
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -238,8 +239,18 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
           <label className={LABEL}>Category *</label>
           <select className={INPUT} value={form.category} onChange={e => set('category', e.target.value)}>
             <option value="">Select category</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            {fsCategories.length === 0 && (
+              <option disabled value="">Loading categories…</option>
+            )}
+            {fsCategories.map(c => (
+              <option key={c.id} value={c.name}>{c.name}</option>
+            ))}
           </select>
+          {fsCategories.length === 0 && (
+            <p className="text-[11px] text-muted-foreground mt-1">
+              No categories found — add categories from the Categories tab first.
+            </p>
+          )}
         </div>
       </div>
 
