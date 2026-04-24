@@ -102,8 +102,8 @@ const Footer = () => {
               </p>
             </div>
 
-            {/* Social buttons */}
-            <div className="flex items-center gap-3 flex-wrap justify-center">
+            {/* Social buttons — equal width grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-lg">
               {SOCIAL_LINKS.map(({ name, icon: Icon, href, label, hoverBg }) => (
                 <a
                   key={name}
@@ -111,10 +111,10 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className={`group flex items-center gap-2.5 px-5 py-2.5 border border-white/14 bg-white/4 ${hoverBg} text-white transition-all duration-250 hover:scale-[1.04] hover:shadow-lg hover:shadow-black/30 hover:border-transparent active:scale-95`}
+                  className={`group flex items-center justify-center gap-2.5 py-3 border border-white/14 bg-white/4 ${hoverBg} text-white transition-all duration-250 hover:scale-[1.04] hover:shadow-lg hover:shadow-black/30 hover:border-transparent active:scale-95`}
                 >
                   {Icon
-                    ? <Icon className="w-4.5 h-4.5 flex-shrink-0 w-[18px] h-[18px]" />
+                    ? <Icon className="w-[18px] h-[18px] flex-shrink-0" />
                     : <WhatsAppIcon className="w-[18px] h-[18px] flex-shrink-0" />}
                   <span className="text-[12px] font-bold uppercase tracking-wider">{name}</span>
                 </a>

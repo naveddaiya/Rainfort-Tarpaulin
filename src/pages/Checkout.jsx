@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, AlertCircle, ShoppingBag, ArrowLeft, Loader2, CreditCard, Lock, Zap } from 'lucide-react';
+import { CheckCircle, AlertCircle, ShoppingBag, ArrowLeft, Loader2, Lock } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AuthModal } from '@/components/ui/auth-modal';
 import { submitOrder } from '@/services/orderService';
-import { openTokenPayment } from '@/services/razorpayService';
 import { cn } from '@/lib/utils';
 
 const badgeVariantMap = {
@@ -58,7 +57,6 @@ export default function Checkout() {
   // status: 'idle' | 'payment' | 'paying' | 'saving' | 'success' | 'error'
   const [status, setStatus]   = useState('idle');
   const [orderId, setOrderId] = useState('');
-  const [paymentId, setPaymentId] = useState('');
 
   // Pre-fill from Google account + saved profile
   useEffect(() => {
@@ -114,24 +112,24 @@ export default function Checkout() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // Step 1: validate form only → advance to payment step (NO Firebase save yet)
+  // Validate form and save order directly
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) { setShowAuthModal(true); return; }
     const validationErrors = validate(form);
     if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); return; }
-    setStatus('payment');
+    saveOrder();
   };
 
-  // Helper: save order to Firebase with optional payment info
-  const saveOrder = async (paymentInfo = null) => {
+  // Save order to Firebase
+  const saveOrder = async () => {
     setStatus('saving');
     try {
       const result = await submitOrder({
         ...form,
         items,
         userId: user.uid,
-        payment: paymentInfo,
+        payment: null,
       });
       setOrderId(result.id);
       clearCart();
@@ -139,40 +137,8 @@ export default function Checkout() {
     } catch (err) {
       console.error('Order save failed:', err);
       setErrors({ submit: err.message || 'Failed to save order. Please try again or contact us via WhatsApp.' });
-      setStatus('payment'); // go back to payment step so user can retry
+      setStatus('idle');
     }
-  };
-
-  // Step 2a: open Razorpay → on success → save order with payment details
-  const handleTokenPayment = () => {
-    setStatus('paying');
-    openTokenPayment({
-      orderId: `TEMP-${Date.now()}`,
-      customerName:  form.name,
-      customerEmail: form.email,
-      customerPhone: form.phone,
-      onSuccess: async (response) => {
-        setPaymentId(response.razorpay_payment_id);
-        await saveOrder({
-          razorpay_payment_id: response.razorpay_payment_id,
-          amount: 499,
-          currency: 'INR',
-          status: 'paid',
-          paidAt: new Date().toISOString(),
-        });
-      },
-      onFailure: (msg) => {
-        if (msg !== 'Payment cancelled') {
-          setErrors({ submit: msg });
-        }
-        setStatus('payment');
-      },
-    });
-  };
-
-  // Step 2b: skip payment → save order without payment
-  const handleSkipPayment = () => {
-    saveOrder(null);
   };
 
   // ── Saving spinner ──
@@ -181,99 +147,6 @@ export default function Checkout() {
       <div className="min-h-screen pt-28 flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-navy-500" />
         <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Saving your order…</p>
-      </div>
-    );
-  }
-
-  // ── Payment step ──
-  if (status === 'payment' || status === 'paying') {
-    return (
-      <div className="min-h-screen pt-28 pb-16 flex flex-col items-center justify-center gap-6 px-4 max-w-md mx-auto">
-        <div className="w-full rounded-2xl border-2 border-border bg-card heavy-shadow overflow-hidden">
-          <div className="bg-gradient-to-br from-slate-900 via-navy-900 to-slate-900 p-6 text-center">
-            <div className="inline-flex p-3 rounded-full bg-safety-500/20 border border-safety-500/30 mb-3">
-              <CreditCard className="h-8 w-8 text-safety-400" />
-            </div>
-            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">Almost There!</h2>
-            <p className="text-white/60 text-sm mt-1">
-              Pay a ₹499 booking token to confirm your order instantly.
-            </p>
-          </div>
-
-          <div className="p-6 space-y-5">
-            {/* Order items recap */}
-            <div className="text-xs text-muted-foreground space-y-1 pb-3 border-b border-border">
-              {items.map(item => (
-                <div key={item.cartKey} className="flex justify-between">
-                  <span className="truncate max-w-[200px] font-medium">{item.name}
-                    {item.selectedSize && ` · ${item.selectedSize}`}
-                    {item.selectedGsm  && ` · ${item.selectedGsm}`}
-                    {' '}×{item.quantity}
-                  </span>
-                  <span className="italic">TBD</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Token payment */}
-            <div className="p-4 rounded-xl border-2 border-safety-500/40 bg-safety-500/5 space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-wider">Pay ₹499 Booking Token</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Secures priority — fully deducted from final bill</p>
-                </div>
-                <span className="text-xl font-bold text-safety-600 dark:text-safety-400 flex-shrink-0">₹499</span>
-              </div>
-
-              {errors.submit && (
-                <p className="text-xs text-destructive flex items-center gap-1.5 font-medium">
-                  <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" /> {errors.submit}
-                </p>
-              )}
-
-              <Button
-                variant="accent" size="lg"
-                className="w-full gap-2 font-bold uppercase tracking-wider buy-glow"
-                onClick={handleTokenPayment}
-                disabled={status === 'paying'}
-              >
-                {status === 'paying'
-                  ? <><Loader2 className="h-5 w-5 animate-spin" /> Opening Payment…</>
-                  : <><Zap className="h-5 w-5" /> Pay ₹499 Now</>
-                }
-              </Button>
-
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Lock className="h-3 w-3" />
-                Secured by Razorpay · UPI, Cards, NetBanking
-              </div>
-            </div>
-
-            <div className="relative flex items-center gap-3">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">or</span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-
-            <button
-              onClick={handleSkipPayment}
-              disabled={status === 'paying'}
-              className="w-full py-3 px-4 rounded-xl border-2 border-border text-sm font-bold uppercase tracking-wider text-muted-foreground hover:border-navy-500/40 hover:text-foreground transition-all duration-200 disabled:opacity-50"
-            >
-              Skip — Pay on delivery / after confirmation
-            </button>
-            <p className="text-xs text-muted-foreground text-center -mt-2">
-              Our team will call within 2 hours to confirm pricing &amp; delivery.
-            </p>
-
-            <button
-              onClick={() => setStatus('idle')}
-              className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors py-1 flex items-center justify-center gap-1"
-            >
-              <ArrowLeft className="h-3 w-3" /> Back to edit details
-            </button>
-          </div>
-        </div>
       </div>
     );
   }
@@ -287,12 +160,9 @@ export default function Checkout() {
           <CheckCircle className="h-16 w-16 text-green-600" />
         </div>
         <div className="text-center space-y-2 max-w-md">
-          <h1 className="text-3xl font-bold uppercase tracking-wider">
-            {paymentId ? 'Payment Confirmed!' : 'Order Placed!'}
-          </h1>
+          <h1 className="text-3xl font-bold uppercase tracking-wider">Order Placed!</h1>
           <p className="text-muted-foreground">
-            Order <span className="font-bold text-foreground">#{shortId}</span> is saved.
-            {paymentId && <> · Token payment <span className="text-green-600 font-bold">confirmed</span>.</>}
+            Order <span className="font-bold text-foreground">#{shortId}</span> has been received.
           </p>
           <p className="text-sm text-muted-foreground">
             Our team will call within 2 hours to confirm final pricing and delivery.
@@ -430,18 +300,28 @@ export default function Checkout() {
                         <span className="text-muted-foreground">Total Items</span>
                         <span className="font-bold">{totalItems}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Booking Token</span>
-                        <span className="font-bold text-safety-600 dark:text-safety-400">₹499 (optional)</span>
-                      </div>
-                      <div className="flex justify-between">
+                      {items.map(item => item.priceRange && (
+                        <div key={item.cartKey} className="flex justify-between">
+                          <span className="text-muted-foreground truncate max-w-[140px]">{item.name}</span>
+                          <span className="font-semibold text-safety-600 dark:text-safety-400 flex-shrink-0 ml-2">{item.priceRange}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between pt-1 border-t border-border">
                         <span className="text-muted-foreground">Final Price</span>
-                        <span className="font-bold text-orange-600">After Confirmation</span>
+                        <span className="font-bold text-orange-600">Team will confirm</span>
                       </div>
                     </div>
+                    {errors.submit && (
+                      <p className="text-xs text-destructive flex items-center gap-1.5 font-medium">
+                        <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" /> {errors.submit}
+                      </p>
+                    )}
                     {user ? (
-                      <Button type="submit" variant="accent" size="lg" className="w-full gap-2 font-bold uppercase tracking-wider buy-glow">
-                        <ShoppingBag className="h-5 w-5" /> Review &amp; Pay
+                      <Button type="submit" variant="accent" size="lg" className="w-full gap-2 font-bold uppercase tracking-wider buy-glow" disabled={status === 'saving'}>
+                        {status === 'saving'
+                          ? <><Loader2 className="h-5 w-5 animate-spin" /> Placing Order…</>
+                          : <><ShoppingBag className="h-5 w-5" /> Place Order</>
+                        }
                       </Button>
                     ) : (
                       <Button type="button" variant="accent" size="lg" className="w-full gap-2 font-bold uppercase tracking-wider" onClick={() => setShowAuthModal(true)}>
@@ -450,7 +330,7 @@ export default function Checkout() {
                     )}
                     <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                       <Lock className="h-3 w-3" />
-                      <span>Secure checkout · Razorpay payment</span>
+                      <span>Secure checkout · Team confirms pricing</span>
                     </div>
                   </CardContent>
                 </Card>

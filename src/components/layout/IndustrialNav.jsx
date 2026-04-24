@@ -270,9 +270,9 @@ const IndustrialNav = () => {
             </div>
 
             {/* ── Mobile Right ── */}
-            <div className="lg:hidden flex items-center gap-1.5">
+            <div className="lg:hidden flex items-center gap-3">
               <Link to="/cart" className="relative">
-                <button className="w-9 h-9 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10 transition-all" aria-label="Cart">
+                <button className="w-10 h-10 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10 transition-all" aria-label="Cart">
                   <ShoppingCart className="h-4 w-4" />
                   {totalItems > 0 && (
                     <span className="absolute -top-1 -right-1 bg-safety-500 text-white text-[9px] font-bold rounded-full h-[16px] w-[16px] flex items-center justify-center">
@@ -283,7 +283,7 @@ const IndustrialNav = () => {
               </Link>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="w-9 h-9 flex items-center justify-center border border-white/18 text-white/65 hover:bg-white/10 hover:text-white transition-all duration-200"
+                className="w-10 h-10 flex items-center justify-center border border-white/18 text-white/65 hover:bg-white/10 hover:text-white transition-all duration-200"
                 aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={isMobileMenuOpen}
               >

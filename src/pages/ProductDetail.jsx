@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { ArrowLeft, ShoppingCart, CheckCircle, Shield, Package, Truck, Star, Phone, MessageCircle, Heart, Ruler, Layers } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, CheckCircle, Shield, Package, Truck, Star, Phone, MessageCircle, Heart, Ruler, Layers, Loader2 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -25,7 +25,7 @@ export default function ProductDetail() {
   const { addItem, items } = useCart();
   const [added, setAdded] = useState(false);
   const { toggleItem, isWishlisted } = useWishlist();
-  const { products } = useProducts();
+  const { products, fsLoading } = useProducts();
   // Match by string ID (Firestore) or numeric ID (static catalog)
   const product = products.find(p => String(p.id) === String(id));
 
@@ -33,6 +33,16 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedGsm, setSelectedGsm]   = useState('');
   const [variantError, setVariantError]  = useState('');
+
+  // While Firestore is still loading, show a spinner instead of "not found"
+  // (Firestore-added products aren't in the static catalog on first render)
+  if (!product && fsLoading) {
+    return (
+      <div className="min-h-screen pt-28 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#1a4d7a' }} />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
