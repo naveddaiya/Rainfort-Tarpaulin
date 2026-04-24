@@ -15,8 +15,8 @@ dist-ssr
 # Environment variables (Firebase credentials)
 .env
 .env.local
-.env.production
 .env.development
+# .env.production is intentionally NOT ignored — it contains only public Cloudinary config
 
 # Editor directories and files
 .vscode/*
