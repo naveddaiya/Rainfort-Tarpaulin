@@ -24,9 +24,13 @@ const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
  */
 export const uploadToCloudinary = (file, onProgress) => {
   if (!CLOUD_NAME || !UPLOAD_PRESET) {
+    const missing = [
+      !CLOUD_NAME    && 'VITE_CLOUDINARY_CLOUD_NAME',
+      !UPLOAD_PRESET && 'VITE_CLOUDINARY_UPLOAD_PRESET',
+    ].filter(Boolean).join(', ');
     return Promise.reject(
       new Error(
-        'Cloudinary not configured. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to your .env file.'
+        `Cloudinary env vars missing: ${missing}. In Cloudflare Pages → Settings → Environment Variables, add them and then redeploy (a new build is required for VITE_ vars to take effect).`
       )
     );
   }
