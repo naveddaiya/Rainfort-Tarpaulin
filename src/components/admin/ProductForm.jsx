@@ -106,8 +106,8 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
 
     if (!form.name.trim())               { setError('Product name is required.'); return; }
     if (!form.category.trim())           { setError('Category is required.'); return; }
-    if (!form.price || isNaN(Number(form.price)) || Number(form.price) <= 0) {
-      setError('A valid price (₹) is required.'); return;
+    if (!form.price || !/^\d+$/.test(form.price) || Number(form.price) <= 0) {
+      setError('Price must be a whole number in ₹ (digits only).'); return;
     }
     if (!form.description.trim()) { setError('Description is required.'); return; }
     if (!imageFile && !form.image) { setError('Product image is required.'); return; }
@@ -270,12 +270,12 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
         <div className={FIELD}>
           <label className={LABEL}>Price (₹) *</label>
           <input
-            type="number"
-            min="1"
-            step="0.01"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             className={INPUT}
             value={form.price}
-            onChange={e => set('price', e.target.value)}
+            onChange={e => set('price', e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="e.g. 850"
           />
         </div>

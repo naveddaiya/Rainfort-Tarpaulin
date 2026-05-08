@@ -1,7 +1,6 @@
 import { Package, ShoppingCart, Search, X, Heart, Loader2, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { products as staticProducts } from '@/data/products';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -61,7 +60,7 @@ const Products = () => {
     return result;
   }, [products, selectedCategory, searchQuery]);
 
-  const productStructuredData = generateProductStructuredData(staticProducts);
+  const productStructuredData = generateProductStructuredData(products);
   const faqStructuredData = generateFAQStructuredData(productFAQs);
   const combinedStructuredData = {
     "@context": "https://schema.org",
@@ -138,11 +137,11 @@ const Products = () => {
         <section className="py-14">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Background fetch status */}
+            {/* Loading state */}
             {fsLoading && (
               <div className="mb-4 flex items-center gap-2 text-xs text-muted-foreground">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                <span>Loading additional products…</span>
+                <span>Loading products…</span>
               </div>
             )}
             {productsError && !fsLoading && (
