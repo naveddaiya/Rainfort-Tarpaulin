@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft, ArrowRight, Package, Lock, MessageCircle } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft, ArrowRight, Lock, MessageCircle, Receipt, Truck } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,7 @@ const badgeVariantMap = {
 };
 
 export default function Cart() {
-  const { items, removeItem, updateQty, totalItems, clearCart } = useCart();
+  const { items, removeItem, updateQty, totalItems, subtotal, gstAmount, shippingCharges, grandTotal, clearCart } = useCart();
   const navigate = useNavigate();
 
   if (items.length === 0) {
@@ -147,7 +147,7 @@ export default function Cart() {
                     )}
                   </div>
 
-                  {/* Qty controls + price note */}
+                  {/* Qty controls + line total */}
                   <div className="flex items-center justify-between mt-auto pt-1">
                     <div className="flex items-center gap-0 border-2 border-border rounded-xl overflow-hidden">
                       <button
@@ -168,8 +168,8 @@ export default function Cart() {
                         <Plus className="h-3 w-3" />
                       </button>
                     </div>
-                    <p className="text-xs font-semibold text-muted-foreground italic">
-                      Price on confirmation
+                    <p className="text-sm font-bold text-safety-600 dark:text-safety-400">
+                      ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                     </p>
                   </div>
                 </div>
@@ -204,17 +204,38 @@ export default function Cart() {
                         {item.name}{' '}
                         <span className="font-bold text-foreground">×{item.quantity}</span>
                       </span>
-                      <span className="font-medium text-muted-foreground italic flex-shrink-0 text-xs mt-0.5">TBD</span>
+                      <span className="font-semibold text-foreground flex-shrink-0 text-xs mt-0.5">
+                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                {/* Pricing info */}
-                <div className="p-3 rounded-xl bg-safety-500/5 border border-safety-500/20 flex items-start gap-2.5">
-                  <Package className="h-4 w-4 text-safety-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-safety-600 dark:text-safety-400 font-medium leading-snug">
-                    Final pricing confirmed after order — varies by size, GSM &amp; quantity. Our team calls within 2 hours.
-                  </p>
+                {/* Price breakdown */}
+                <div className="pt-3 border-t-2 border-border space-y-1.5 text-sm">
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Subtotal</span>
+                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span className="flex items-center gap-1"><Receipt className="h-3 w-3" /> GST (12%)</span>
+                    <span>₹{gstAmount.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Shipping</span>
+                    <span className={shippingCharges === 0 ? 'text-green-600 font-semibold' : ''}>
+                      {shippingCharges === 0 ? 'FREE' : `₹${shippingCharges}`}
+                    </span>
+                  </div>
+                  {shippingCharges === 0 && (
+                    <p className="text-xs text-green-600 dark:text-green-400">Free shipping on orders above ₹2,000</p>
+                  )}
+                  <div className="flex justify-between items-center pt-2 border-t-2 border-border">
+                    <span className="font-bold uppercase tracking-wider text-sm">Total</span>
+                    <span className="font-bold text-lg text-safety-600 dark:text-safety-400">
+                      ₹{grandTotal.toLocaleString('en-IN')}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Checkout CTA */}
@@ -228,7 +249,7 @@ export default function Cart() {
                 </Button>
 
                 {/* WhatsApp bulk pricing */}
-                <a href="https://wa.me/918385011488" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/918385011488" target="_blank" rel="noopener noreferrer" className="block mt-3">
                   <Button
                     variant="outline"
                     className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950 font-bold uppercase tracking-wider text-sm gap-2"

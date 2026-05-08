@@ -1,0 +1,14 @@
+name              = "rainfort-payments"
+main              = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Non-secret config — safe to commit
+[vars]
+FIREBASE_PROJECT_ID = "tarpaulin-a9397"
+
+# ── Secrets — set once with wrangler, never commit ───────────────────────────
+# wrangler secret put RAZORPAY_KEY_ID
+# wrangler secret put RAZORPAY_KEY_SECRET
+# wrangler secret put RAZORPAY_WEBHOOK_SECRET
+# wrangler secret put FIREBASE_WEB_API_KEY     (Firebase Console → Project Settings → General → Web API Key)
+# wrangler secret put FIREBASE_SERVICE_ACCOUNT  (paste entire service account JSON — Firebase Console → Project Settings → Service Accounts → Generate new private key)

@@ -22,6 +22,7 @@ import {
   getDoc, getDocs,
   addDoc, updateDoc, deleteDoc,
   serverTimestamp, query, orderBy, where, limit,
+  runTransaction,
 } from 'firebase/firestore';
 import { getAuth as _getAuth } from 'firebase/auth';
 
@@ -55,6 +56,7 @@ export {
   getDoc, getDocs,
   addDoc, updateDoc, deleteDoc,
   serverTimestamp, query, orderBy, where, limit,
+  runTransaction,
 };
 
 // Analytics remains lazy — it's optional and heavier.

@@ -28,6 +28,8 @@ export default function CategoryForm({ category = null, nextOrder = 1, onSave, o
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!file.type.startsWith('image/')) { setError('Only image files are allowed.'); return; }
+    if (file.size > 10 * 1024 * 1024) { setError('Image must be under 10 MB.'); return; }
     setUploading(true);
     setUploadProgress(0);
     setUploadDone(false);

@@ -29,14 +29,50 @@ service cloud.firestore {
 
     // Orders — authenticated users can create their own orders; admin can read/update all
     match /orders/{docId} {
-      allow create: if isAuthenticated();
-      allow read, update: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create, update: if isAdmin();
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
       allow delete: if isAdmin();
     }
 
     // Quotes — anyone can submit, admin can read
     match /quotes/{docId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasOnly([
+          'name', 'phone', 'product', 'status', 'source',
+          'createdAt', 'updatedAt', 'userAgent', 'referrer', 'currentUrl'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() > 0
+        && request.resource.data.phone.size() <= 30
+        && request.resource.data.product is string
+        && request.resource.data.product.size() > 0
+        && request.resource.data.product.size() <= 180
+        && request.resource.data.status == 'new'
+        && request.resource.data.source == 'website';
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /contacts/{docId} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'name', 'email', 'phone', 'company', 'message', 'status', 'source',
+          'createdAt', 'updatedAt', 'userAgent', 'referrer', 'currentUrl'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.size() <= 180
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() > 0
+        && request.resource.data.phone.size() <= 30
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.status == 'new'
+        && request.resource.data.source == 'website-contact';
       allow read, update, delete: if isAdmin();
     }
   }

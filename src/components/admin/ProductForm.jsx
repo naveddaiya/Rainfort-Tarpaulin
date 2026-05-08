@@ -21,7 +21,8 @@ const emptyForm = () => ({
   category: '',
   badge: 'Popular',
   description: '',
-  priceRange: '',
+  price: '',
+  stock: '',
   image: '',
   features: [''],
   applications: [''],
@@ -39,7 +40,8 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
       category:    product.category || '',
       badge:       product.badge || 'Popular',
       description: product.description || '',
-      priceRange:  product.priceRange || '',
+      price:       product.price != null ? String(product.price) : '',
+      stock:       product.stock != null ? String(product.stock) : '',
       image:       product.image || '',
       features:    product.features?.length ? product.features : [''],
       applications: product.applications?.length ? product.applications : [''],
@@ -102,9 +104,11 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
     e.preventDefault();
     setError('');
 
-    if (!form.name.trim())        { setError('Product name is required.'); return; }
-    if (!form.category.trim())    { setError('Category is required.'); return; }
-    if (!form.priceRange.trim())  { setError('Price range is required.'); return; }
+    if (!form.name.trim())               { setError('Product name is required.'); return; }
+    if (!form.category.trim())           { setError('Category is required.'); return; }
+    if (!form.price || isNaN(Number(form.price)) || Number(form.price) <= 0) {
+      setError('A valid price (₹) is required.'); return;
+    }
     if (!form.description.trim()) { setError('Description is required.'); return; }
     if (!imageFile && !form.image) { setError('Product image is required.'); return; }
 
@@ -125,7 +129,8 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
         category:    form.category.trim(),
         badge:       form.badge,
         description: form.description.trim(),
-        priceRange:  form.priceRange.trim(),
+        price:       Number(form.price),
+        stock:       form.stock !== '' ? Number(form.stock) : null,
         image:       imageUrl,
         features:    cleanList(form.features),
         applications: cleanList(form.applications),
@@ -254,8 +259,8 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
         </div>
       </div>
 
-      {/* ── Badge + Price Range ── */}
-      <div className="grid sm:grid-cols-2 gap-4">
+      {/* ── Badge + Price + Stock ── */}
+      <div className="grid sm:grid-cols-3 gap-4">
         <div className={FIELD}>
           <label className={LABEL}>Badge</label>
           <select className={INPUT} value={form.badge} onChange={e => set('badge', e.target.value)}>
@@ -263,13 +268,27 @@ export default function ProductForm({ product = null, onSave, onCancel }) {
           </select>
         </div>
         <div className={FIELD}>
-          <label className={LABEL}>Price Range *</label>
+          <label className={LABEL}>Price (₹) *</label>
           <input
-            type="text"
+            type="number"
+            min="1"
+            step="0.01"
             className={INPUT}
-            value={form.priceRange}
-            onChange={e => set('priceRange', e.target.value)}
-            placeholder="e.g. ₹850 – ₹3,200"
+            value={form.price}
+            onChange={e => set('price', e.target.value)}
+            placeholder="e.g. 850"
+          />
+        </div>
+        <div className={FIELD}>
+          <label className={LABEL}>Stock (units)</label>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            className={INPUT}
+            value={form.stock}
+            onChange={e => set('stock', e.target.value)}
+            placeholder="Leave blank = unlimited"
           />
         </div>
       </div>

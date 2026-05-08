@@ -184,10 +184,10 @@ export default function ProductDetail() {
                   ))}
                   <span className="text-sm text-muted-foreground font-medium ml-1.5">(4.9 · 120+ orders)</span>
                 </div>
-                {/* Price range pill */}
-                {product.priceRange && (
+                {/* Price pill */}
+                {product.price > 0 && (
                   <span className="px-3 py-1 text-sm font-bold bg-safety-500/10 text-safety-600 dark:text-safety-400 border border-safety-500/30 rounded-full">
-                    {product.priceRange}
+                    ₹{product.price.toLocaleString('en-IN')}
                   </span>
                 )}
               </div>
@@ -323,13 +323,13 @@ export default function ProductDetail() {
                     Price varies by size, quantity &amp; customization.
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Place your order and our team confirms pricing within 2 hours.
+                    Pay securely online. Your order is confirmed instantly.
                   </p>
                 </div>
-                {product.priceRange && (
+                {product.price > 0 && (
                   <div className="text-right flex-shrink-0">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Starting from</p>
-                    <p className="text-sm font-bold text-safety-600 dark:text-safety-400">{product.priceRange}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Price</p>
+                    <p className="text-sm font-bold text-safety-600 dark:text-safety-400">₹{product.price.toLocaleString('en-IN')}</p>
                   </div>
                 )}
               </div>
@@ -402,9 +402,9 @@ export default function ProductDetail() {
                       <div className="absolute inset-0 product-overlay" />
                       <div className="absolute bottom-3 left-3 flex items-center gap-2">
                         <Badge variant={badgeVariantMap[p.badge] || 'default'} className="text-xs">{p.badge}</Badge>
-                        {p.priceRange && (
+                        {p.price > 0 && (
                           <span className="text-xs font-bold text-white/90 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                            {p.priceRange}
+                            ₹{p.price.toLocaleString('en-IN')}
                           </span>
                         )}
                       </div>

@@ -76,8 +76,17 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('rainfort-cart', JSON.stringify(state.items));
   }, [state.items]);
 
+  const GST_RATE = 0.12;
+  const FREE_SHIPPING_THRESHOLD = 2000;
+  const SHIPPING_CHARGE = 150;
+
   const totalItems = state.items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = state.items.reduce((sum, i) => sum + (i.price || 0) * i.quantity, 0);
+  const subtotal   = state.items.reduce((sum, i) => sum + (i.price || 0) * i.quantity, 0);
+  const gstAmount  = Math.round(subtotal * GST_RATE);
+  const shippingCharges = subtotal === 0 ? 0 : subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_CHARGE;
+  const grandTotal = subtotal + gstAmount + shippingCharges;
+  // kept for backward compat
+  const totalPrice = subtotal;
 
   const addItem    = (product) => dispatch({ type: 'ADD_ITEM',    payload: product });
   const removeItem = (cartKey) => dispatch({ type: 'REMOVE_ITEM', payload: cartKey });
@@ -85,7 +94,7 @@ export const CartProvider = ({ children }) => {
   const clearCart  = () => dispatch({ type: 'CLEAR_CART' });
 
   return (
-    <CartContext.Provider value={{ items: state.items, totalItems, totalPrice, addItem, removeItem, updateQty, clearCart }}>
+    <CartContext.Provider value={{ items: state.items, totalItems, totalPrice, subtotal, gstAmount, shippingCharges, grandTotal, addItem, removeItem, updateQty, clearCart }}>
       {children}
     </CartContext.Provider>
   );

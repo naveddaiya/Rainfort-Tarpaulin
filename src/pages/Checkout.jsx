@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, AlertCircle, ShoppingBag, ArrowLeft, Loader2, Lock } from 'lucide-react';
+import {
+  CheckCircle, AlertCircle, ShoppingBag, ArrowLeft,
+  Loader2, Lock, CreditCard, Truck, Receipt,
+} from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AuthModal } from '@/components/ui/auth-modal';
-import { submitOrder } from '@/services/orderService';
+import { sendConfirmationEmails } from '@/services/orderService';
+import { openTokenPayment } from '@/services/razorpayService';
+import { createRazorpayOrder, verifyAndConfirmPayment, failOrder } from '@/services/workerService';
 import { cn } from '@/lib/utils';
 
 const badgeVariantMap = {
@@ -44,7 +49,7 @@ const validate = (form) => {
 };
 
 export default function Checkout() {
-  const { items, totalItems, clearCart } = useCart();
+  const { items, subtotal, gstAmount, shippingCharges, grandTotal, clearCart } = useCart();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -53,12 +58,11 @@ export default function Checkout() {
     name: '', phone: '', email: '', company: '',
     address: '', city: '', state: '', pincode: '', notes: '',
   });
-  const [errors, setErrors]   = useState({});
-  // status: 'idle' | 'payment' | 'paying' | 'saving' | 'success' | 'error'
-  const [status, setStatus]   = useState('idle');
+  const [errors, setErrors] = useState({});
+  // status: 'idle' | 'creating' | 'paying' | 'verifying' | 'success'
+  const [status, setStatus] = useState('idle');
   const [orderId, setOrderId] = useState('');
 
-  // Pre-fill from Google account + saved profile
   useEffect(() => {
     if (user) {
       setForm(prev => ({
@@ -112,41 +116,129 @@ export default function Checkout() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // Validate form and save order directly
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) { setShowAuthModal(true); return; }
     const validationErrors = validate(form);
     if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); return; }
-    saveOrder();
+    initiatePayment();
   };
 
-  // Save order to Firebase
-  const saveOrder = async () => {
-    setStatus('saving');
+  const initiatePayment = async () => {
+    setStatus('creating');
+    setErrors({});
+
+    // ── Step 1: Write PENDING_PAYMENT order to Firestore ──────────────────────
+    let pendingId;
+    let serverPricing;
+    let serverItems;
+
+    // ── Step 2: Get a real Razorpay order ID from the Worker ─────────────────
+    let razorpayOrderId;
     try {
-      const result = await submitOrder({
-        ...form,
-        items,
-        userId: user.uid,
-        payment: null,
+      const idToken = await user.getIdToken();
+      const result  = await createRazorpayOrder({
+        customer: {
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          company: form.company,
+        },
+        shipping: {
+          address: form.address,
+          city: form.city,
+          state: form.state,
+          pincode: form.pincode,
+        },
+        notes: form.notes,
+        items: items.map(({ id, quantity, selectedSize, selectedGsm }) => ({
+          id: String(id),
+          quantity,
+          selectedSize,
+          selectedGsm,
+        })),
+        userAgent: navigator.userAgent,
+        referrer: document.referrer || 'direct',
+      }, idToken);
+      pendingId = result.firestoreOrderId;
+      razorpayOrderId = result.razorpayOrderId;
+      serverPricing = result.pricing;
+      serverItems = result.items;
+    } catch (err) {
+      console.error('createRazorpayOrder worker failed:', err);
+      setErrors({ submit: err.message || 'Failed to create payment order. Please try again.' });
+      setStatus('idle');
+      return;
+    }
+
+    // ── Step 3: Open Razorpay modal with the server-created order ID ──────────
+    setStatus('paying');
+    openTokenPayment({
+      amount:         serverPricing.grandTotal,
+      razorpayOrderId,
+      customerName:   form.name,
+      customerEmail:  form.email,
+      customerPhone:  form.phone,
+      onSuccess: (paymentResponse) => handlePaymentSuccess(pendingId, paymentResponse, serverItems, serverPricing),
+      onFailure: async (msg) => {
+        const idToken = await user.getIdToken();
+        await failOrder(pendingId, idToken).catch(() => {});
+        setErrors({
+          submit: msg === 'Payment cancelled'
+            ? 'Payment was cancelled. Please try again.'
+            : `Payment failed: ${msg}`,
+        });
+        setStatus('idle');
+      },
+    });
+  };
+
+  const handlePaymentSuccess = async (pendingId, paymentData, serverItems, serverPricing) => {
+    setStatus('verifying');
+    try {
+      // ── Step 4: Verify signature + confirm order + decrement stock (Worker) ──
+      const idToken = await user.getIdToken();
+      await verifyAndConfirmPayment(
+        paymentData.razorpay_payment_id,
+        paymentData.razorpay_order_id,
+        paymentData.razorpay_signature,
+        pendingId,
+        idToken,
+      );
+
+      // ── Step 5: Fire confirmation emails (EmailJS is browser-only) ───────────
+      sendConfirmationEmails({
+        orderId:  pendingId,
+        customer: { ...form },
+        shipping: { address: form.address, city: form.city, state: form.state, pincode: form.pincode },
+        items: serverItems,
+        pricing:  serverPricing,
       });
-      setOrderId(result.id);
+
+      setOrderId(pendingId);
       clearCart();
       setStatus('success');
     } catch (err) {
-      console.error('Order save failed:', err);
-      setErrors({ submit: err.message || 'Failed to save order. Please try again or contact us via WhatsApp.' });
+      console.error('verifyAndConfirmPayment CF failed:', err);
+      setErrors({
+        submit: `Payment received but verification failed. Contact us with your payment ID: ${paymentData.razorpay_payment_id}`,
+      });
       setStatus('idle');
     }
   };
 
-  // ── Saving spinner ──
-  if (status === 'saving') {
+  // ── Loading states ──
+  const loadingMessage = {
+    creating:  'Preparing your order…',
+    verifying: 'Verifying payment…',
+  };
+  if (status === 'creating' || status === 'verifying') {
     return (
       <div className="min-h-screen pt-28 flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-navy-500" />
-        <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Saving your order…</p>
+        <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+          {loadingMessage[status]}
+        </p>
       </div>
     );
   }
@@ -162,10 +254,10 @@ export default function Checkout() {
         <div className="text-center space-y-2 max-w-md">
           <h1 className="text-3xl font-bold uppercase tracking-wider">Order Placed!</h1>
           <p className="text-muted-foreground">
-            Order <span className="font-bold text-foreground">#{shortId}</span> has been received.
+            Order <span className="font-bold text-foreground">#{shortId}</span> has been placed and payment received.
           </p>
           <p className="text-sm text-muted-foreground">
-            Our team will call within 2 hours to confirm final pricing and delivery.
+            Our team will contact you soon to confirm delivery details.
           </p>
           <p className="text-sm">
             WhatsApp:{' '}
@@ -247,12 +339,12 @@ export default function Checkout() {
                     </div>
                     <div className="grid sm:grid-cols-3 gap-4">
                       {[
-                        { name: 'city', label: 'City *', placeholder: 'City', type: 'text', col: 1 },
-                        { name: 'pincode', label: 'Pincode *', placeholder: '6-digit pincode', type: 'text', col: 1 },
-                      ].map(({ name, label, placeholder, type }) => (
+                        { name: 'city',    label: 'City *',    placeholder: 'City' },
+                        { name: 'pincode', label: 'Pincode *', placeholder: '6-digit pincode' },
+                      ].map(({ name, label, placeholder }) => (
                         <div key={name} className="space-y-1">
                           <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</label>
-                          <input type={type} name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} maxLength={name === 'pincode' ? 6 : undefined} className={inputClass(name)} />
+                          <input type="text" name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} maxLength={name === 'pincode' ? 6 : undefined} className={inputClass(name)} />
                           {errors[name] && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors[name]}</p>}
                         </div>
                       ))}
@@ -273,6 +365,7 @@ export default function Checkout() {
                 </Card>
               </div>
 
+              {/* ── Order Summary ── */}
               <div>
                 <Card className="sticky top-24">
                   <CardHeader><CardTitle className="text-base">Order Summary</CardTitle></CardHeader>
@@ -295,32 +388,54 @@ export default function Checkout() {
                         </div>
                       ))}
                     </div>
+
+                    {/* Price breakdown */}
                     <div className="border-t-2 border-dashed border-border pt-3 space-y-1.5 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Total Items</span>
-                        <span className="font-bold">{totalItems}</span>
-                      </div>
-                      {items.map(item => item.priceRange && (
+                      {items.map(item => (
                         <div key={item.cartKey} className="flex justify-between">
-                          <span className="text-muted-foreground truncate max-w-[140px]">{item.name}</span>
-                          <span className="font-semibold text-safety-600 dark:text-safety-400 flex-shrink-0 ml-2">{item.priceRange}</span>
+                          <span className="text-muted-foreground truncate max-w-[140px]">{item.name} ×{item.quantity}</span>
+                          <span className="font-semibold flex-shrink-0 ml-2">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                         </div>
                       ))}
-                      <div className="flex justify-between pt-1 border-t border-border">
-                        <span className="text-muted-foreground">Final Price</span>
-                        <span className="font-bold text-orange-600">Team will confirm</span>
+                      <div className="flex justify-between pt-1 text-muted-foreground">
+                        <span>Subtotal</span>
+                        <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span className="flex items-center gap-1"><Receipt className="h-3 w-3" /> GST (12%)</span>
+                        <span>₹{gstAmount.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Shipping</span>
+                        <span className={shippingCharges === 0 ? 'text-green-600 font-semibold' : ''}>
+                          {shippingCharges === 0 ? 'FREE' : `₹${shippingCharges}`}
+                        </span>
+                      </div>
+                      {shippingCharges === 0 && subtotal > 0 && (
+                        <p className="text-xs text-green-600 dark:text-green-400">Free shipping on orders above ₹2,000</p>
+                      )}
+                      <div className="flex justify-between pt-2 border-t-2 border-border font-bold text-base">
+                        <span>Total</span>
+                        <span className="text-safety-600 dark:text-safety-400">₹{grandTotal.toLocaleString('en-IN')}</span>
                       </div>
                     </div>
+
                     {errors.submit && (
                       <p className="text-xs text-destructive flex items-center gap-1.5 font-medium">
                         <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" /> {errors.submit}
                       </p>
                     )}
                     {user ? (
-                      <Button type="submit" variant="accent" size="lg" className="w-full gap-2 font-bold uppercase tracking-wider buy-glow" disabled={status === 'saving'}>
-                        {status === 'saving'
-                          ? <><Loader2 className="h-5 w-5 animate-spin" /> Placing Order…</>
-                          : <><ShoppingBag className="h-5 w-5" /> Place Order</>
+                      <Button
+                        type="submit"
+                        variant="accent"
+                        size="lg"
+                        className="w-full gap-2 font-bold uppercase tracking-wider buy-glow"
+                        disabled={status !== 'idle'}
+                      >
+                        {status === 'paying'
+                          ? <><Loader2 className="h-5 w-5 animate-spin" /> Opening Payment…</>
+                          : <><CreditCard className="h-5 w-5" /> Pay ₹{grandTotal.toLocaleString('en-IN')} &amp; Place Order</>
                         }
                       </Button>
                     ) : (
@@ -330,7 +445,7 @@ export default function Checkout() {
                     )}
                     <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                       <Lock className="h-3 w-3" />
-                      <span>Secure checkout · Team confirms pricing</span>
+                      <span>Secure checkout · Powered by Razorpay</span>
                     </div>
                   </CardContent>
                 </Card>
