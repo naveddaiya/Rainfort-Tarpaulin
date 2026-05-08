@@ -29,8 +29,9 @@ service cloud.firestore {
 
     // Orders — authenticated users can create their own orders; admin can read/update all
     match /orders/{docId} {
-      allow create, update: if isAdmin();
-      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read:   if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 

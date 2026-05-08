@@ -810,7 +810,7 @@ export default function Admin() {
               <div>
                 <h2 className="text-base sm:text-lg font-bold uppercase tracking-wider">Product Catalog</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {fsProducts.length} custom product{fsProducts.length !== 1 ? 's' : ''} added · Static catalog has 6 base products
+                  {fsProducts.length} product{fsProducts.length !== 1 ? 's' : ''} in catalog
                 </p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
@@ -844,6 +844,7 @@ export default function Admin() {
                   </button>
                 </div>
                 <ProductForm
+                  key={editingProduct?.id ?? 'new'}
                   product={editingProduct}
                   onSave={() => {
                     setShowProductForm(false);
@@ -952,8 +953,8 @@ export default function Admin() {
                         <h3 className="font-bold uppercase tracking-wide text-sm leading-snug line-clamp-2">
                           {product.name}
                         </h3>
-                        {product.priceRange && (
-                          <p className="text-xs font-bold text-safety-500 mt-0.5">{product.priceRange}</p>
+                        {product.price != null && (
+                          <p className="text-xs font-bold text-safety-500 mt-0.5">₹{product.price}</p>
                         )}
                       </div>
 
