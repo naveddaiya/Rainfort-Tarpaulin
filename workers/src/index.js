@@ -45,6 +45,23 @@ const asString = (value, max = 500) =>
 const isPositiveNumber = (value) =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
+const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+const isValidGstin = (s) => /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(s);
+const isValidIndianPincode = (s) => /^\d{6}$/.test(s);
+
+// In-memory rate limiter: 10 requests per IP per minute on payment endpoints.
+// Resets per isolate warm-up; Cloudflare Workers spin up fresh isolates under load
+// so this is a best-effort safeguard, not a hard quota.
+const _rl = new Map();
+function checkRateLimit(ip, limit = 10, windowMs = 60_000) {
+  const now = Date.now();
+  let rec = _rl.get(ip) || { count: 0, resetAt: now + windowMs };
+  if (now > rec.resetAt) { rec = { count: 0, resetAt: now + windowMs }; }
+  rec.count++;
+  _rl.set(ip, rec);
+  return rec.count <= limit;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Firestore value ↔ JS conversion
 // ─────────────────────────────────────────────────────────────────────────────
@@ -338,6 +355,7 @@ async function buildServerOrder(proj, token, userId, body) {
     phone:   asString(customer.phone, 30),
     email:   asString(customer.email, 180),
     company: asString(customer.company, 180) || null,
+    gstin:   asString(customer.gstin, 15).toUpperCase() || null,
   };
   const cleanShipping = {
     address: asString(shipping.address, 500),
@@ -349,8 +367,17 @@ async function buildServerOrder(proj, token, userId, body) {
   if (!cleanCustomer.name || !cleanCustomer.phone || !cleanCustomer.email) {
     throw new Error('Missing customer details');
   }
+  if (!isValidEmail(cleanCustomer.email)) {
+    throw new Error('Invalid email address');
+  }
   if (!cleanShipping.address || !cleanShipping.city || !cleanShipping.state || !cleanShipping.pincode) {
     throw new Error('Missing shipping details');
+  }
+  if (!isValidIndianPincode(cleanShipping.pincode)) {
+    throw new Error('Pincode must be a 6-digit number');
+  }
+  if (cleanCustomer.gstin && !isValidGstin(cleanCustomer.gstin)) {
+    throw new Error('Invalid GSTIN format');
   }
 
   const items = [];
@@ -447,6 +474,9 @@ async function txConfirmOrder(proj, token, docId, orderItems, paymentUpdates) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handleCreateRazorpayOrder(request, env) {
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (!checkRateLimit(ip)) return fail('Too many requests — please wait a minute', 429);
+
   const idToken = (request.headers.get('Authorization') || '').replace('Bearer ', '');
   if (!idToken) return fail('Missing auth token', 401);
 
@@ -584,7 +614,13 @@ async function handleRazorpayWebhook(request, env) {
   const expected = await hmacHex(env.RAZORPAY_WEBHOOK_SECRET, rawBody);
   if (expected !== sig) return new Response('Invalid signature', { status: 400 });
 
-  const event   = JSON.parse(rawBody);
+  const event = JSON.parse(rawBody);
+
+  // Reject events older than 5 minutes (replay-attack guard)
+  const eventTs = event?.created_at; // Unix seconds from Razorpay
+  if (eventTs && Date.now() / 1000 - eventTs > 300) {
+    return new Response('Event too old', { status: 400 });
+  }
   const payment = event?.payload?.payment?.entity;
   if (!payment?.order_id) return new Response('OK', { status: 200 });
 

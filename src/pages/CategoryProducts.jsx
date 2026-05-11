@@ -37,13 +37,13 @@ export default function CategoryProducts() {
   }, [products, category, search]);
 
   const handleAddToCart = (product) => {
-    addItem({ ...product, price: 0 });
+    addItem({ ...product, price: product.price || 0 });
     setAddedIds(prev => ({ ...prev, [product.id]: true }));
     setTimeout(() => setAddedIds(prev => ({ ...prev, [product.id]: false })), 2000);
   };
 
   const handleBuyNow = (product) => {
-    addItem({ ...product, price: 0 });
+    addItem({ ...product, price: product.price || 0 });
     navigate('/checkout');
   };
 

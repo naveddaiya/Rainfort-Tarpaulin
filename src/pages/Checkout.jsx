@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   CheckCircle, AlertCircle, ShoppingBag, ArrowLeft,
-  Loader2, Lock, CreditCard, Truck, Receipt,
+  Loader2, Lock, CreditCard, Truck, Receipt, Check, Building2, ChevronDown,
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -14,6 +14,7 @@ import { sendConfirmationEmails } from '@/services/orderService';
 import { openTokenPayment } from '@/services/razorpayService';
 import { createRazorpayOrder, verifyAndConfirmPayment, failOrder } from '@/services/workerService';
 import { cn } from '@/lib/utils';
+import { lookupPincode } from '@/data/pincodeData';
 
 const badgeVariantMap = {
   Popular: 'accent', Premium: 'default', Specialized: 'secondary',
@@ -28,22 +29,35 @@ const indianStates = [
   'Delhi','Jammu & Kashmir','Ladakh',
 ];
 
-const validate = (form) => {
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const GSTIN_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+const validate = (form, gstinEnabled) => {
   const errors = {};
   if (!form.name.trim())  errors.name = 'Name is required';
   if (!form.phone.trim()) {
     errors.phone = 'Phone is required';
   } else if (!/^(\+91|91)?[6-9]\d{9}$/.test(form.phone.replace(/\s/g, ''))) {
-    errors.phone = 'Enter valid Indian mobile number';
+    errors.phone = 'Enter a valid Indian mobile number';
   }
-  if (!form.email.trim())   errors.email = 'Email is required';
+  if (!form.email.trim()) {
+    errors.email = 'Email is required';
+  } else if (!EMAIL_RE.test(form.email.trim())) {
+    errors.email = 'Enter a valid email address';
+  }
   if (!form.address.trim()) errors.address = 'Address is required';
-  if (!form.city.trim())    errors.city = 'City is required';
-  if (!form.state)          errors.state = 'State is required';
+  if (!form.city.trim())    errors.city    = 'City is required';
+  if (!form.state)          errors.state   = 'State is required';
   if (!form.pincode.trim()) {
     errors.pincode = 'Pincode is required';
   } else if (!/^\d{6}$/.test(form.pincode)) {
-    errors.pincode = 'Enter valid 6-digit pincode';
+    errors.pincode = 'Enter a valid 6-digit pincode';
+  }
+  if (gstinEnabled && form.gstin.trim()) {
+    if (!GSTIN_RE.test(form.gstin.trim())) {
+      errors.gstin = 'Enter a valid 15-character GSTIN (e.g., 27AAAPL1234C1Z5)';
+    }
   }
   return errors;
 };
@@ -57,12 +71,15 @@ export default function Checkout() {
   const [form, setForm] = useState({
     name: '', phone: '', email: '', company: '',
     address: '', city: '', state: '', pincode: '', notes: '',
+    gstin: '',
   });
-  const [errors, setErrors] = useState({});
+  const [errors,       setErrors]       = useState({});
+  const [gstinEnabled, setGstinEnabled] = useState(false);
   // status: 'idle' | 'creating' | 'paying' | 'verifying' | 'success'
-  const [status, setStatus] = useState('idle');
+  const [status,  setStatus]  = useState('idle');
   const [orderId, setOrderId] = useState('');
 
+  // ── Pre-fill from Firebase Auth + saved profile ──────────────────────────────
   useEffect(() => {
     if (user) {
       setForm(prev => ({
@@ -70,18 +87,18 @@ export default function Checkout() {
         name:  prev.name  || user.displayName || '',
         email: prev.email || user.email       || '',
       }));
-      const savedProfile = localStorage.getItem(`rainfort-profile-${user.uid}`);
-      if (savedProfile) {
+      const saved = localStorage.getItem(`rainfort-profile-${user.uid}`);
+      if (saved) {
         try {
-          const profile = JSON.parse(savedProfile);
+          const p = JSON.parse(saved);
           setForm(prev => ({
             ...prev,
-            phone:   prev.phone   || profile.phone   || '',
-            company: prev.company || profile.company || '',
-            address: prev.address || profile.address || '',
-            city:    prev.city    || profile.city    || '',
-            state:   prev.state   || profile.state   || '',
-            pincode: prev.pincode || profile.pincode || '',
+            phone:   prev.phone   || p.phone   || '',
+            company: prev.company || p.company || '',
+            address: prev.address || p.address || '',
+            city:    prev.city    || p.city    || '',
+            state:   prev.state   || p.state   || '',
+            pincode: prev.pincode || p.pincode || '',
           }));
         } catch { /* ignore */ }
       }
@@ -91,6 +108,18 @@ export default function Checkout() {
   useEffect(() => {
     if (!authLoading && !user && items.length > 0) setShowAuthModal(true);
   }, [authLoading, user, items.length]);
+
+  // ── Instant offline city + state auto-fill from pincode ──────────────────────
+  useEffect(() => {
+    if (form.pincode.length !== 6 || !/^\d{6}$/.test(form.pincode)) return;
+    const result = lookupPincode(form.pincode);
+    if (!result) return;
+    setForm(prev => ({
+      ...prev,
+      state: result.state    || prev.state,
+      city:  result.district || prev.city,
+    }));
+  }, [form.pincode]);
 
   if (authLoading) {
     return (
@@ -116,10 +145,16 @@ export default function Checkout() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
+  const handleGstinChange = (e) => {
+    const value = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 15);
+    setForm(prev => ({ ...prev, gstin: value }));
+    if (errors.gstin) setErrors(prev => ({ ...prev, gstin: '' }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) { setShowAuthModal(true); return; }
-    const validationErrors = validate(form);
+    const validationErrors = validate(form, gstinEnabled);
     if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); return; }
     initiatePayment();
   };
@@ -128,58 +163,50 @@ export default function Checkout() {
     setStatus('creating');
     setErrors({});
 
-    // ── Step 1: Write PENDING_PAYMENT order to Firestore ──────────────────────
-    let pendingId;
-    let serverPricing;
-    let serverItems;
+    let pendingId, serverPricing, serverItems, razorpayOrderId;
 
-    // ── Step 2: Get a real Razorpay order ID from the Worker ─────────────────
-    let razorpayOrderId;
     try {
       const idToken = await user.getIdToken();
       const result  = await createRazorpayOrder({
         customer: {
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
+          name:    form.name,
+          phone:   form.phone,
+          email:   form.email,
           company: form.company,
+          gstin:   gstinEnabled && form.gstin.trim() ? form.gstin.trim() : null,
         },
         shipping: {
           address: form.address,
-          city: form.city,
-          state: form.state,
+          city:    form.city,
+          state:   form.state,
           pincode: form.pincode,
         },
         notes: form.notes,
         items: items.map(({ id, quantity, selectedSize, selectedGsm }) => ({
-          id: String(id),
-          quantity,
-          selectedSize,
-          selectedGsm,
+          id: String(id), quantity, selectedSize, selectedGsm,
         })),
         userAgent: navigator.userAgent,
-        referrer: document.referrer || 'direct',
+        referrer:  document.referrer || 'direct',
       }, idToken);
-      pendingId = result.firestoreOrderId;
+      pendingId       = result.firestoreOrderId;
       razorpayOrderId = result.razorpayOrderId;
-      serverPricing = result.pricing;
-      serverItems = result.items;
+      serverPricing   = result.pricing;
+      serverItems     = result.items;
     } catch (err) {
-      console.error('createRazorpayOrder worker failed:', err);
+      console.error('createRazorpayOrder failed:', err);
       setErrors({ submit: err.message || 'Failed to create payment order. Please try again.' });
       setStatus('idle');
       return;
     }
 
-    // ── Step 3: Open Razorpay modal with the server-created order ID ──────────
     setStatus('paying');
     openTokenPayment({
-      amount:         serverPricing.grandTotal,
+      amount:        serverPricing.grandTotal,
       razorpayOrderId,
-      customerName:   form.name,
-      customerEmail:  form.email,
-      customerPhone:  form.phone,
-      onSuccess: (paymentResponse) => handlePaymentSuccess(pendingId, paymentResponse, serverItems, serverPricing),
+      customerName:  form.name,
+      customerEmail: form.email,
+      customerPhone: form.phone,
+      onSuccess: (res) => handlePaymentSuccess(pendingId, res, serverItems, serverPricing),
       onFailure: async (msg) => {
         const idToken = await user.getIdToken();
         await failOrder(pendingId, idToken).catch(() => {});
@@ -196,7 +223,6 @@ export default function Checkout() {
   const handlePaymentSuccess = async (pendingId, paymentData, serverItems, serverPricing) => {
     setStatus('verifying');
     try {
-      // ── Step 4: Verify signature + confirm order + decrement stock (Worker) ──
       const idToken = await user.getIdToken();
       await verifyAndConfirmPayment(
         paymentData.razorpay_payment_id,
@@ -205,21 +231,18 @@ export default function Checkout() {
         pendingId,
         idToken,
       );
-
-      // ── Step 5: Fire confirmation emails (EmailJS is browser-only) ───────────
       sendConfirmationEmails({
         orderId:  pendingId,
         customer: { ...form },
         shipping: { address: form.address, city: form.city, state: form.state, pincode: form.pincode },
-        items: serverItems,
+        items:    serverItems,
         pricing:  serverPricing,
       });
-
       setOrderId(pendingId);
       clearCart();
       setStatus('success');
     } catch (err) {
-      console.error('verifyAndConfirmPayment CF failed:', err);
+      console.error('verifyAndConfirmPayment failed:', err);
       setErrors({
         submit: `Payment received but verification failed. Contact us with your payment ID: ${paymentData.razorpay_payment_id}`,
       });
@@ -227,23 +250,18 @@ export default function Checkout() {
     }
   };
 
-  // ── Loading states ──
-  const loadingMessage = {
-    creating:  'Preparing your order…',
-    verifying: 'Verifying payment…',
-  };
+  // ── Loading ───────────────────────────────────────────────────────────────────
+  const loadingMsg = { creating: 'Preparing your order…', verifying: 'Verifying payment…' };
   if (status === 'creating' || status === 'verifying') {
     return (
       <div className="min-h-screen pt-28 flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-navy-500" />
-        <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-          {loadingMessage[status]}
-        </p>
+        <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{loadingMsg[status]}</p>
       </div>
     );
   }
 
-  // ── Success ──
+  // ── Success ───────────────────────────────────────────────────────────────────
   if (status === 'success') {
     const shortId = orderId.slice(0, 8).toUpperCase();
     return (
@@ -256,9 +274,7 @@ export default function Checkout() {
           <p className="text-muted-foreground">
             Order <span className="font-bold text-foreground">#{shortId}</span> has been placed and payment received.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Our team will contact you soon to confirm delivery details.
-          </p>
+          <p className="text-sm text-muted-foreground">Our team will contact you soon to confirm delivery details.</p>
           <p className="text-sm">
             WhatsApp:{' '}
             <a href="https://wa.me/918385011488" className="text-green-600 font-bold hover:underline" target="_blank" rel="noopener noreferrer">
@@ -274,11 +290,14 @@ export default function Checkout() {
     );
   }
 
-  // ── Form (idle / error) ──
+  // ── Form ──────────────────────────────────────────────────────────────────────
   const inputClass = (field) => cn(
     'w-full px-4 py-2.5 rounded-lg border-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors duration-200',
     errors[field] ? 'border-destructive focus:border-destructive' : 'border-border focus:border-navy-500'
   );
+
+  const pincodeFormatOk = /^\d{6}$/.test(form.pincode) && !errors.pincode;
+  const gstinFormatOk   = gstinEnabled && form.gstin.length === 15 && GSTIN_RE.test(form.gstin) && !errors.gstin;
 
   return (
     <>
@@ -310,53 +329,137 @@ export default function Checkout() {
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="grid lg:grid-cols-3 gap-8">
+
+              {/* ── Left: Contact + Shipping ──────────────────────────────── */}
               <div className="lg:col-span-2 space-y-6">
+
+                {/* Contact Details */}
                 <Card>
                   <CardHeader><CardTitle className="text-base">Contact Details</CardTitle></CardHeader>
-                  <CardContent className="grid sm:grid-cols-2 gap-4">
-                    {[
-                      { name: 'name',    label: 'Full Name *',     placeholder: 'Your full name',  type: 'text' },
-                      { name: 'phone',   label: 'Phone Number *',  placeholder: '+91 98765 43210', type: 'tel' },
-                      { name: 'email',   label: 'Email Address *', placeholder: 'you@example.com', type: 'email' },
-                      { name: 'company', label: 'Company Name',    placeholder: 'Optional',        type: 'text' },
-                    ].map(({ name, label, placeholder, type }) => (
-                      <div key={name} className="space-y-1">
-                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</label>
-                        <input type={type} name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} className={inputClass(name)} />
-                        {errors[name] && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors[name]}</p>}
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader><CardTitle className="text-base">Shipping Address</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Street Address *</label>
-                      <input type="text" name="address" value={form.address} onChange={handleChange} placeholder="Building, street, area" className={inputClass('address')} />
-                      {errors.address && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.address}</p>}
-                    </div>
-                    <div className="grid sm:grid-cols-3 gap-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
                       {[
-                        { name: 'city',    label: 'City *',    placeholder: 'City' },
-                        { name: 'pincode', label: 'Pincode *', placeholder: '6-digit pincode' },
-                      ].map(({ name, label, placeholder }) => (
+                        { name: 'name',    label: 'Full Name *',     placeholder: 'Your full name',  type: 'text' },
+                        { name: 'phone',   label: 'Phone Number *',  placeholder: '+91 98765 43210', type: 'tel' },
+                        { name: 'email',   label: 'Email Address *', placeholder: 'you@example.com', type: 'email' },
+                        { name: 'company', label: 'Company Name',    placeholder: 'Optional',        type: 'text' },
+                      ].map(({ name, label, placeholder, type }) => (
                         <div key={name} className="space-y-1">
                           <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</label>
-                          <input type="text" name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} maxLength={name === 'pincode' ? 6 : undefined} className={inputClass(name)} />
+                          <input type={type} name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} className={inputClass(name)} />
                           {errors[name] && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors[name]}</p>}
                         </div>
                       ))}
+                    </div>
+
+                    {/* B2B / GSTIN toggle */}
+                    <div className="pt-1 border-t border-dashed border-border">
+                      <button
+                        type="button"
+                        onClick={() => { setGstinEnabled(v => !v); if (gstinEnabled) setForm(prev => ({ ...prev, gstin: '' })); }}
+                        className="flex items-center gap-2.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <span className={cn(
+                          'w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors',
+                          gstinEnabled ? 'bg-navy-600 border-navy-600' : 'border-input'
+                        )}>
+                          {gstinEnabled && <Check className="h-2.5 w-2.5 text-white" />}
+                        </span>
+                        <Building2 className="h-4 w-4 flex-shrink-0" />
+                        Business purchase — add GSTIN for GST tax invoice
+                      </button>
+
+                      {gstinEnabled && (
+                        <div className="mt-3 space-y-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                            GSTIN <span className="font-normal text-muted-foreground/70">(optional — required for ITC claim)</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="gstin"
+                            value={form.gstin}
+                            onChange={handleGstinChange}
+                            placeholder="27AAAPL1234C1Z5"
+                            maxLength={15}
+                            className={cn(inputClass('gstin'), 'font-mono tracking-widest')}
+                            autoComplete="off"
+                            spellCheck={false}
+                          />
+                          {errors.gstin && (
+                            <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.gstin}</p>
+                          )}
+                          {gstinFormatOk && (
+                            <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                              <CheckCircle className="h-3 w-3" /> Valid GSTIN — will appear on your tax invoice
+                            </p>
+                          )}
+                          <p className="text-xs text-muted-foreground">15-character GST Identification Number of your registered business.</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Shipping Address */}
+                <Card>
+                  <CardHeader><CardTitle className="text-base">Shipping Address</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Street Address *</label>
+                      <input type="text" name="address" value={form.address} onChange={handleChange} placeholder="Building no., street, area / locality" className={inputClass('address')} />
+                      {errors.address && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.address}</p>}
+                    </div>
+
+                    <div className="grid sm:grid-cols-3 gap-4">
+
+                      {/* City */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">City *</label>
+                        <input type="text" name="city" value={form.city} onChange={handleChange} placeholder="City / Town" className={inputClass('city')} />
+                        {errors.city && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.city}</p>}
+                      </div>
+
+                      {/* Pincode — instant format validation, no external API */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pincode *</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="pincode"
+                            value={form.pincode}
+                            onChange={handleChange}
+                            placeholder="6-digit pincode"
+                            maxLength={6}
+                            inputMode="numeric"
+                            className={cn(inputClass('pincode'), pincodeFormatOk && 'pr-8')}
+                          />
+                          {pincodeFormatOk && (
+                            <CheckCircle className="pointer-events-none absolute inset-y-0 right-2.5 my-auto h-4 w-4 text-green-500" />
+                          )}
+                        </div>
+                        {errors.pincode && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.pincode}</p>}
+                      </div>
+
+                      {/* State — auto-filled from pincode prefix */}
                       <div className="space-y-1">
                         <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">State *</label>
-                        <select name="state" value={form.state} onChange={handleChange} className={inputClass('state')}>
-                          <option value="">Select State</option>
-                          {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
+                        <div className="relative">
+                          <select
+                            name="state"
+                            value={form.state}
+                            onChange={handleChange}
+                            className={cn(inputClass('state'), 'appearance-none pr-10 cursor-pointer')}
+                          >
+                            <option value="">Select state</option>
+                            {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute inset-y-0 right-3 my-auto h-4 w-4 text-muted-foreground" />
+                        </div>
                         {errors.state && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.state}</p>}
                       </div>
                     </div>
+
                     <div className="space-y-1">
                       <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Special Requirements / Notes</label>
                       <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Size, GSM, color, quantity details…" rows={3} className={`${inputClass('notes')} resize-none`} />
@@ -365,7 +468,7 @@ export default function Checkout() {
                 </Card>
               </div>
 
-              {/* ── Order Summary ── */}
+              {/* ── Order Summary ─────────────────────────────────────────── */}
               <div>
                 <Card className="sticky top-24">
                   <CardHeader><CardTitle className="text-base">Order Summary</CardTitle></CardHeader>
@@ -389,7 +492,6 @@ export default function Checkout() {
                       ))}
                     </div>
 
-                    {/* Price breakdown */}
                     <div className="border-t-2 border-dashed border-border pt-3 space-y-1.5 text-sm">
                       {items.map(item => (
                         <div key={item.cartKey} className="flex justify-between">
@@ -425,6 +527,7 @@ export default function Checkout() {
                         <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" /> {errors.submit}
                       </p>
                     )}
+
                     {user ? (
                       <Button
                         type="submit"
@@ -443,6 +546,7 @@ export default function Checkout() {
                         Sign In to Place Order
                       </Button>
                     )}
+
                     <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                       <Lock className="h-3 w-3" />
                       <span>Secure checkout · Powered by Razorpay</span>
@@ -450,6 +554,7 @@ export default function Checkout() {
                   </CardContent>
                 </Card>
               </div>
+
             </div>
           </form>
         </div>

@@ -18,13 +18,13 @@ export default function Wishlist() {
   const [addedIds, setAddedIds] = useState({});
 
   const handleAddToCart = (product) => {
-    addItem({ ...product, price: 0 });
+    addItem({ ...product, price: product.price || 0 });
     setAddedIds(prev => ({ ...prev, [product.id]: true }));
     setTimeout(() => setAddedIds(prev => ({ ...prev, [product.id]: false })), 2000);
   };
 
   const handleAddAllToCart = () => {
-    items.forEach(item => addItem({ ...item, price: 0 }));
+    items.forEach(item => addItem({ ...item, price: item.price || 0 }));
     const ids = {};
     items.forEach(i => { ids[i.id] = true; });
     setAddedIds(ids);
